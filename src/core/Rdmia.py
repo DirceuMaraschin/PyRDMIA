@@ -3,7 +3,7 @@
 # Dirceu Maraschin
 # Lucas Tortelli
 
-from pyrdmia.core import Rdm
+from pyrdmia.core.Rdm import *
 
 class Rdmia(object):
 

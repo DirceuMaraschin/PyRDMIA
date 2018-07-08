@@ -57,7 +57,7 @@ It was developed in CIn/UFPE (Brazil) by Rafael Menezes Barreto
 
 if __name__ == "__main__":
     setup(
-        name="pyrmdia",
+        name="pyrdmia",
         version="0.1.0",
         description=_package_description[0],
         long_description="\n".join(_package_description[2:-1]),
@@ -69,11 +69,11 @@ if __name__ == "__main__":
             "Linux"
         ],
         packages=[
-            "pyrmdia",
-            "pyrmdia.core"
+            "pyrdmia",
+            "pyrdmia.core"
         ],
         package_dir={
-            "pyrmdia" : "src"
+            "pyrdmia" : "src"
         },
         install_requires = [
                           'numpy >= 1.13.0',

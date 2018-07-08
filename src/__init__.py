@@ -1,7 +1,6 @@
-from kaucherpy.kaucher import *
-from kaucherpy.kaucher.Kaucher import *
-from kaucherpy.core import *
-from kaucherpy.support import *
+from pyrdmia import *
+from pyrdmia.core import *
+from pyrdmia.core.Rdmia import *
 
 
 def _test():
