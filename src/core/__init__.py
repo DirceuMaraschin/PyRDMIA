@@ -1,30 +1,25 @@
-# kaucher/__init__.py
+# PyRDMIA Python Library 2018
+# RDM-IA implementation by
+# Dirceu Maraschin Jr
+# Lucas Tortelli
+
+# RDM/__init__.py
 #
-# Copyright 2008 Rafael Menezes Barreto <rmb3@cin.ufpe.br,
-# rafaelbarreto87@gmail.com>
+#This program is free software; you may redistribute it and/or 
+# modify it under the terms of the GNU General Public License v3.
 #
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License version 2
-# as published by the Free Software Foundation.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-# MA 02110-1301, USA.
+#This library was developed in the hope that it will be useful in 
+# the problem solving process using RDM intervals WITHOUT ANY 
+# COMMERCIAL INTENTION.
 
 
-"""IReal type sub-package
+'''
+Here are all things related to the RDM type.
 
-All the stuff related to the IReal type is organized here.
-
-It was developed in CIn/UFPE (Brazil) by Rafael Menezes Barreto
-<rmb3@cin.ufpe.br, rafaelbarreto87@gmail.com> and it's free software.
-"""
+PyRDMIA was developed in Laboratory of Fundamentals of Computing and 
+Intelligent Systems / CDTec / UFPel (Brazil) by Dirceu Maraschin Jr 
+and Lucas Mendes Tortelli as free opensource.
+'''
 
 from pyrdmia.core.Rdmia import *
 from pyrdmia.core.Rdm import *

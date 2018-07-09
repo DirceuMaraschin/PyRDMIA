@@ -1,3 +1,8 @@
+# PyRDMIA Python Library 2018
+# RDM-IA implementation by
+# Dirceu Maraschin Jr
+# Lucas Tortelli
+
 from pyrdmia import *
 from pyrdmia.core import *
 from pyrdmia.core.Rdmia import *

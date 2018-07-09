@@ -1,7 +1,12 @@
-# Python
-# Rdm-IA implementation
-# Dirceu Maraschin
+# PyRDMIA Python Library 2018
+# RDM-IA implementation by
+# Dirceu Maraschin Jr
 # Lucas Tortelli
+
+'''
+This file is responsible for creating RDM numbers and setting the 
+precision of operation in calculations using PyRDMIA.
+'''
 
 from pyrdmia.core.Rdm import *
 

@@ -1,10 +1,22 @@
+# PyRDMIA Python Library 2018
+# RDM-IA implementation by
+# Dirceu Maraschin Jr
+# Lucas Tortelli
+
+
+'''
+This file contains the main class responsible for creating 
+the RDM type and all standard operations and complex operations 
+defined following the original concepts of RDM arithmetic.
+'''
+
 import numpy as np
 import sys
 
 class Rdm(object):
-    _lower = 0.0
-    _upper = 0.0
-    _alpha = 0.0
+    _lower = 0.0 
+    _upper = 0.0 
+    _alpha = 0.0 
     f = None
 
     def __init__(self,x,y=None):
@@ -33,6 +45,7 @@ class Rdm(object):
     def __getitem__(self):
         return np.array([self._lower,self._upper])
 
+    #Default operations since they are all or initially RDM numbers.
     def __add__(self,other):
         other = self.__checkValue(other)
         values = []
@@ -74,6 +87,7 @@ class Rdm(object):
         
         return Rdm(min(values),max(values))
 
+    #default operations given that possibly an initial number is not an RDM number
     def __rdiv__(self,other):
         other = self.__checkValue(other)
         
@@ -117,7 +131,6 @@ class Rdm(object):
                 values.append(other._f(alpha_other) * self._f(alpha_self))
         
         return Rdm(min(values),max(values))
-    #Teste
 
     def __eq__(self,other):
         other = self.__checkValue(other)
