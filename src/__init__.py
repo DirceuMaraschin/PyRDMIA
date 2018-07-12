@@ -6,7 +6,7 @@
 from pyrdmia import *
 from pyrdmia.core import *
 from pyrdmia.core.Rdmia import *
-
+from pyrdmia.utils.RdmMath import *
 
 def _test():
     from doctest import DocTestSuite

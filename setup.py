@@ -70,7 +70,8 @@ if __name__ == "__main__":
         ],
         packages=[
             "pyrdmia",
-            "pyrdmia.core"
+            "pyrdmia.core",
+            "pyrdmia.utils"
         ],
         package_dir={
             "pyrdmia" : "src"

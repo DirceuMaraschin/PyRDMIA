@@ -1,4 +1,4 @@
-from pyrdmia import Rdm
+from pyrdmia.core import Rdmia as rdmia
 import math
 
 __all__ = ["RdmMath"]

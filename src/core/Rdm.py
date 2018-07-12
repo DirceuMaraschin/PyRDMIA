@@ -44,6 +44,14 @@ class Rdm(object):
     def __getitem__(self):
         return np.array([self._lower,self._upper])
 
+    def __pow__(self,other):
+        if(type(other) is Rdm):
+            lower = min(self.lower**other.lower,self.lower**other.upper,self.upper**other.lower,self.upper**other.upper)
+            upper = max(self.lower**other.lower,self.lower**other.upper,self.upper**other.lower,self.upper**other.upper)
+            return Rdm(lower,upper)
+        else:
+            return Rdm(self.lower**other,self.upper**other)
+
     #Default operations since they are all or initially RDM numbers.
     def __add__(self,other):
         other = self.__checkValue(other)
