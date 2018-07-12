@@ -1,24 +1,22 @@
 # PyRDMIA
-- RDM library based on interval arithmetic RDM-IA
+- RDM library based on muldimensional interval arithmetic RDM-IA
 
+# Authors:
+- Dirceu Maraschin Jr. @dirceumaraschin <dirceu.maraschin@gmail.com>
+- Lucas Mendes Tortelli @lmtortelli <lmtortelli@gmail.com>
 
 # Definition:
--  This application is a implementation of Kaucher Interval Arithmetic. This way of calculate express real numbers in interval numbers.
+-  This application is a implementation of RDM Interval Arithmetic. This way of calculate express real numbers in interval numbers.
 -  See the references for more details and the used theory for this implementation.
 
 # How to Install
- - This a module python, just execute "sudo python setup.py install"
-
-# Authors:
-- Dirceu Maraschin Jr. @dirceumaraschin
-- Lucas Mendes Tortelli @lmtortelli
+ - This a module python, just execute "$sudo python setup.py install"
 
 # Dependencies
 - Automatic Installing
 [FENV](https://github.com/ldo/pyfenv)
 - numpy >= 1.13.1.0
 - enum34
-
 
 # References
 - PIEGAT, Andrzej; LANDOWSKI, Marek. Is the conventional interval-arithmetic correct?. Journal of Theoretical and Applied Computer Science, v. 6, n. 2, p. 27-44, 2012.
@@ -27,8 +25,9 @@
 
 - LANDOWSKI, Marek. Differences between Moore and RDM interval arithmetic. In: Intelligent Systems' 2014. Springer, Cham, 2015. p. 331-340.
 
-
 # GNU GENERAL PUBLIC LICENSE
+- The development followed the free software GNU guidelines
+
 =======================================================================
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007

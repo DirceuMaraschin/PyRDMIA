@@ -3,7 +3,6 @@
 # Dirceu Maraschin Jr
 # Lucas Tortelli
 
-
 '''
 This file contains the main class responsible for creating 
 the RDM type and all standard operations and complex operations 
