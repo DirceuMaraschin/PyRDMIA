@@ -12,7 +12,8 @@ class RdmMath(object):
     #convert degrees to radians
     @staticmethod
     def degToRad(value):
-        rad = (value/180)*RdmMath.PI
+        #rad = (value/180)*RdmMath.PI
+        rad = math.radians(value)
         if (type(rad) is Rdm):
             return rad
         else:
@@ -30,7 +31,7 @@ class RdmMath(object):
         n = RdmMath.degToRad(rad)
         c = 0
         r = 1
-        while(c < 50):
+        while(c<50):
             c += 1
             r += (((-1)**c)*(n**(2 * c)))/(math.factorial(2 * c))
         return r
@@ -48,7 +49,7 @@ class RdmMath(object):
 
     @staticmethod
     def abs(x):
-        return rdmia.number(abs(x.lower),abs(x.upper))
+        return RdmMath.sqrt(x**2)
 
 '''
     def acos(x, rnd=0):

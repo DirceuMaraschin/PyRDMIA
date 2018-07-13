@@ -36,7 +36,7 @@ class Rdm(object):
         return other
 
     def __str__(self):
-        return "["+str(self._lower)+" , "+str(self._upper)+"]"
+        return "["+str(self._lower)+", "+str(self._upper)+"]"
 
     def __repr__(self):
         return "[%r, %r]" % (self._lower, self._upper)
