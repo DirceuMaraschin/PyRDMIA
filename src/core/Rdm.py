@@ -44,13 +44,15 @@ class Rdm(object):
     def __getitem__(self):
         return np.array([self._lower,self._upper])
 
+    #exponentiation operation
     def __pow__(self,other):
-        if(type(other) is Rdm):
-            lower = min(self.lower**other.lower,self.lower**other.upper,self.upper**other.lower,self.upper**other.upper)
-            upper = max(self.lower**other.lower,self.lower**other.upper,self.upper**other.lower,self.upper**other.upper)
-            return Rdm(lower,upper)
-        else:
-            return Rdm(self.lower**other,self.upper**other)
+        other = self.__checkValue(other)
+        values = []
+        rupper = 1+self._alpha
+        for alpha_self in np.arange(0,rupper,self._alpha):
+            for alpha_other in np.arange(0,rupper,self._alpha):
+                values.append(self._f(alpha_self) ** other._f(alpha_other))
+        return Rdm(min(values),max(values))
 
     #Default operations since they are all or initially RDM numbers.
     def __add__(self,other):
@@ -60,7 +62,6 @@ class Rdm(object):
         for alpha_self in np.arange(0,rupper,self._alpha):
             for alpha_other in np.arange(0,rupper,self._alpha):
                 values.append(self._f(alpha_self) + other._f(alpha_other))
-        
         return Rdm(min(values),max(values))
 
     def __sub__(self,other):
@@ -70,7 +71,6 @@ class Rdm(object):
         for alpha_self in np.arange(0,rupper,self._alpha):
             for alpha_other in np.arange(0,rupper,self._alpha):
                 values.append(self._f(alpha_self) - other._f(alpha_other))
-        
         return Rdm(min(values),max(values))
 
     def __mul__(self,other):
@@ -80,63 +80,52 @@ class Rdm(object):
         for alpha_self in np.arange(0,rupper,self._alpha):
             for alpha_other in np.arange(0,rupper,self._alpha):
                 values.append(self._f(alpha_self) * other._f(alpha_other))
-        
         return Rdm(min(values),max(values))
 
     def __div__(self,other):
         other = self.__checkValue(other)
-        
         values = []
         rupper = 1+self._alpha
         for alpha_self in np.arange(0,rupper,self._alpha):
             for alpha_other in np.arange(0,rupper,self._alpha):
                 values.append(self._f(alpha_self) / other._f(alpha_other))
-        
         return Rdm(min(values),max(values))
 
     #default operations given that possibly an initial number is not an RDM number
     def __rdiv__(self,other):
         other = self.__checkValue(other)
-        
         values = []
         rupper = 1+self._alpha
         for alpha_self in np.arange(0,rupper,self._alpha):
             for alpha_other in np.arange(0,rupper,self._alpha):
                 values.append(other._f(alpha_other) / self._f(alpha_self))
-        
         return Rdm(min(values),max(values))
 
     def __rsub__(self,other):
         other = self.__checkValue(other)
-        
         values = []
         rupper = 1+self._alpha
         for alpha_self in np.arange(0,rupper,self._alpha):
             for alpha_other in np.arange(0,rupper,self._alpha):
                 values.append(other._f(alpha_other) - self._f(alpha_self))
-        
         return Rdm(min(values),max(values))
 
     def __radd__(self,other):
         other = self.__checkValue(other)
-        
         values = []
         rupper = 1+self._alpha
         for alpha_self in np.arange(0,rupper,self._alpha):
             for alpha_other in np.arange(0,rupper,self._alpha):
                 values.append(other._f(alpha_other) + self._f(alpha_self))
-        
         return Rdm(min(values),max(values))
 
     def __rmul__(self,other):
         other = self.__checkValue(other)
-        
         values = []
         rupper = 1+self._alpha
         for alpha_self in np.arange(0,rupper,self._alpha):
             for alpha_other in np.arange(0,rupper,self._alpha):
                 values.append(other._f(alpha_other) * self._f(alpha_self))
-        
         return Rdm(min(values),max(values))
 
     def __eq__(self,other):

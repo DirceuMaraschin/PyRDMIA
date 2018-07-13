@@ -1,4 +1,5 @@
 from pyrdmia.core import Rdmia as rdmia
+from pyrdmia.core import Rdm
 import math
 
 __all__ = ["RdmMath"]
@@ -12,7 +13,7 @@ class RdmMath(object):
     @staticmethod
     def degToRad(value):
         rad = (value/180)*RdmMath.PI
-        if (type(rad) is rdmia.number):
+        if (type(rad) is Rdm):
             return rad
         else:
             return rdmia.number(rad)
