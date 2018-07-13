@@ -41,7 +41,7 @@ class RdmMath(object):
 
     @staticmethod
     def sqrt(x):
-        if(type(x) is rdmia.number):
+        if(type(x) is Rdm):
             return x**(1.0/2.0)
         else:
             return rdmia.number(x**(1.0/2.0))
