@@ -7,6 +7,7 @@ from pyrdmia import *
 from pyrdmia.core import *
 from pyrdmia.core.Rdmia import *
 from pyrdmia.utils.RdmMath import *
+from pyrdmia.utils.QualitativeMetrics import *
 
 def _test():
     from doctest import DocTestSuite

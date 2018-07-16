@@ -1,5 +1,6 @@
 from pyrdmia.core import Rdmia as rdmia
 from pyrdmia.core import Rdm
+from pyrdmia.utils import QualitativeMetrics as qm
 import math
 
 __all__ = ["RdmMath"]
@@ -13,7 +14,14 @@ class RdmMath(object):
     @staticmethod
     def degToRad(value):
         #rad = (value/180)*RdmMath.PI
-        rad = math.radians(value)
+        print (qm)
+        print (qm.centerI(rdmia.number(1)))
+        rad = 0
+        if (type(value) is Rdm):
+            rad = math.radians(qm.centerI(value))
+        else:
+            rad = math.radians(value)
+        
         if (type(rad) is Rdm):
             return rad
         else:
