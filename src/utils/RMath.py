@@ -1,11 +1,14 @@
+from pyrdmia import *
 from pyrdmia.core import Rdmia as rdmia
 from pyrdmia.core import Rdm
-from pyrdmia.utils import QualitativeMetrics as qm
+from .QualitativeMetrics import QualitativeMetrics as qm
+
+
 import math
 
-__all__ = ["RdmMath"]
+__all__ = ["RMath"]
 
-class RdmMath(object):
+class RMath(object):
     
     E = rdmia.number(math.e)
     PI = rdmia.number(math.pi)
@@ -13,12 +16,10 @@ class RdmMath(object):
     #convert degrees to radians
     @staticmethod
     def degToRad(value):
-        #rad = (value/180)*RdmMath.PI
-        print (qm)
-        print (qm.centerI(rdmia.number(1)))
+        #rad = (value/180)*RMath.PI
         rad = 0
         if (type(value) is Rdm):
-            rad = math.radians(qm.centerI(value))
+            rad = math.radians(qm.midpoint(value))
         else:
             rad = math.radians(value)
         
@@ -31,12 +32,12 @@ class RdmMath(object):
     @staticmethod
     def sin(value):
         r = 0
-        r = RdmMath.sqrt(1 - (RdmMath.cos(value))**2)
+        r = RMath.sqrt(1 - (RMath.cos(value))**2)
         return r
 
     @staticmethod
     def cos(rad):
-        n = RdmMath.degToRad(rad)
+        n = RMath.degToRad(rad)
         c = 0
         r = 1
         while(c<50):
@@ -46,7 +47,7 @@ class RdmMath(object):
 
     @staticmethod
     def exp(x):
-        return RdmMath.E**x
+        return RMath.E**x
 
     @staticmethod
     def sqrt(x):
@@ -57,7 +58,7 @@ class RdmMath(object):
 
     @staticmethod
     def abs(x):
-        return RdmMath.sqrt(x**2)
+        return RMath.sqrt(x**2)
 
 '''
     def acos(x, rnd=0):

@@ -53,8 +53,8 @@ F = Funcmon(func): wrap func() to monitor and plot F.fmem F.xmem F.cost
 from __future__ import division
 import numpy as np
 from numpy import abs, cos, exp, mean, pi, prod, sin, sqrt, sum
-from pyrdmia import *
-from pyrdmia.utils import RdmMath as ria
+from pyrdmia import Rdmia as rdmia
+from pyrdmia.utils import RMath as ria
 from pyrdmia.utils import QualitativeMetrics as qm
 import time
 
@@ -228,8 +228,8 @@ def nesterov( x ):
     x = np.asarray_chkfinite(x)
     x0 = x[:-1]
     x1 = x[1:]
-    t1 = abs( 1 - qm.centerI(x[0]) ) / 4
-    t2 = sum( [abs(qm.centerI( x1[i] - 2*abs(qm.centerI(x0[i])) + 1 )) for i in range(len(x1)) ])
+    t1 = abs( 1 - qm.midpoint(x[0]) ) / 4
+    t2 = sum( [abs(qm.midpoint( x1[i] - 2*abs(qm.midpoint(x0[i])) + 1 )) for i in range(len(x1)) ])
     return t1 + t2
 
 #...............................................................................
@@ -371,6 +371,9 @@ if __name__ == "__main__":  # standalone test --
     nstep = 700  # 11: 0 .1 .2 .. 1
     seed = 1
     init = 50
+    rdmia.setDotPrecision(1)
+    print ("PRECISION: ",rdmia.precision())
+    
     problems = {}
         # to change these params in sh or ipython, run this.py  a=1  b=None  c=[3] ...
     for arg in sys.argv[1:]:
