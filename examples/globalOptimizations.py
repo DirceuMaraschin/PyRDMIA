@@ -367,11 +367,11 @@ if __name__ == "__main__":  # standalone test --
     import sys
     import json
 
-    dims = [2,4,6,8]
-    nstep = 700  # 11: 0 .1 .2 .. 1
-    seed = 1
-    init = 50
-    rdmia.setDotPrecision(1)
+    dims = [2]#[2,4,6,8] #dimensions
+    nstep = 60  #iterations
+    seed = 1 
+    init = 10 #50
+    rdmia.setDotPrecision(2)
     print ("PRECISION: ",rdmia.precision())
     
     problems = {}

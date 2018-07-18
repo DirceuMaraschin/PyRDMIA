@@ -11,6 +11,10 @@ defined following the original concepts of RDM arithmetic.
 
 import numpy as np
 import sys
+from kaucherpy.support.error import IntervalError
+from kaucherpy.support.error import TypeIntervalError
+from kaucherpy.support.error import UndefinedValueIntervalError
+from kaucherpy.support.error import IntervalDivisionByZero
 
 class Rdm(object):
     _lower = 0.0 
@@ -84,15 +88,17 @@ class Rdm(object):
 
     def __div__(self,other):
         other = self.__checkValue(other)
-        values = []
-        rupper = 1+self._alpha
-        for alpha_self in np.arange(0,rupper,self._alpha):
-            for alpha_other in np.arange(0,rupper,self._alpha):
-                values.append(self._f(alpha_self) / other._f(alpha_other))
-        return Rdm(min(values),max(values))
+        if(other.lower()*other.upper() <= 0):
+            raise IntervalDivisionByZero()
+        else:            
+            values = []
+            rupper = 1+self._alpha
+            for alpha_self in np.arange(0,rupper,self._alpha):
+                for alpha_other in np.arange(0,rupper,self._alpha):
+                    values.append(self._f(alpha_self) / other._f(alpha_other))
+            return Rdm(min(values),max(values))
 
     __truediv__ = __div__
-        
 
     #default operations given that possibly an initial number is not an RDM number
     def __rdiv__(self,other):
@@ -131,6 +137,7 @@ class Rdm(object):
                 values.append(other._f(alpha_other) * self._f(alpha_self))
         return Rdm(min(values),max(values))
 
+    #equal
     def __eq__(self,other):
         other = self.__checkValue(other)
         if((other.lower() == self.lower()) and (other.upper() == self.upper())):
