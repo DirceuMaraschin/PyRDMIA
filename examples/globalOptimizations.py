@@ -80,7 +80,7 @@ def ackley( x, a=20, b=0.2, c=2*ria.PI ):
     s1 = sum( [v**2 for v in x])
     s2 = sum( [ria.cos( c * v ) for v in x])
     
-    return -a*ria.exp( -b*( s1 / n )**(1.0/2.0)) - ria.exp( s2 / n ) + a + ria.exp(1)
+    return (0-a)*ria.exp( -b*( s1 / n )**(1.0/2.0)) - ria.exp( s2 / n ) + a + ria.exp(1)
 
 #...............................................................................
 def dixonprice( x ):  # dp.m
@@ -339,8 +339,6 @@ def getbounds( funcname, dim ):
     except:
         return None
 
-    
-
 #...............................................................................
 _minus = "dixonprice perm powersum schwefel sphere sum2 trid zakharov "  # nlopt ~ same ?
 
@@ -362,6 +360,9 @@ def makeList(steps,dim):
         r = []
 
     return result
+
+
+#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 if __name__ == "__main__":  # standalone test --
     import sys

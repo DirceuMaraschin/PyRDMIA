@@ -48,16 +48,6 @@ class Rdm(object):
     def __getitem__(self):
         return np.array([self._lower,self._upper])
 
-    #exponentiation operation
-    def __pow__(self,other):
-        other = self.__checkValue(other)
-        values = []
-        rupper = 1+self._alpha
-        for alpha_self in np.arange(0,rupper,self._alpha):
-            for alpha_other in np.arange(0,rupper,self._alpha):
-                values.append(self._f(alpha_self) ** other._f(alpha_other))
-        return Rdm(min(values),max(values))
-
     #Default operations since they are all or initially RDM numbers.
     def __add__(self,other):
         other = self.__checkValue(other)
@@ -88,7 +78,7 @@ class Rdm(object):
 
     def __div__(self,other):
         other = self.__checkValue(other)
-        if(other.lower()*other.upper() <= 0):
+        if(other.lower()*other.upper() <= 0): #division test by zero
             raise IntervalDivisionByZero()
         else:            
             values = []
@@ -97,8 +87,6 @@ class Rdm(object):
                 for alpha_other in np.arange(0,rupper,self._alpha):
                     values.append(self._f(alpha_self) / other._f(alpha_other))
             return Rdm(min(values),max(values))
-
-    __truediv__ = __div__
 
     #default operations given that possibly an initial number is not an RDM number
     def __rdiv__(self,other):
@@ -137,10 +125,89 @@ class Rdm(object):
                 values.append(other._f(alpha_other) * self._f(alpha_self))
         return Rdm(min(values),max(values))
 
-    #equal
+    #control
+    def __checkValue(self,other):
+        if(type(other) is not Rdm):
+            other = Rdm(other)
+        self.__validateDefinedValue(other)
+        return other
+
+    def __validateDefinedValue(self,other):
+        if(other.isEmpty or self.isEmpty):
+            raise UndefinedValueIntervalError("Invalid operation! The interval are empty.")
+
+    #complementary and unary operations 
+    def __pow__(self,other):
+        other = self.__checkValue(other)
+        values = []
+        rupper = 1+self._alpha
+        for alpha_self in np.arange(0,rupper,self._alpha):
+            for alpha_other in np.arange(0,rupper,self._alpha):
+                values.append(self._f(alpha_self) ** other._f(alpha_other))
+        return Rdm(min(values),max(values))
+
+    def __or__(self, other):
+        other = self.__checkValue(other)
+        return Rdm(max(self.lower(),other.lower()),min(self.upper(),other.upper()))
+
+    def __and__(self,other):
+        other = self.__checkValue(other)
+        return Rdm(min(self.lower(),other.lower()),max(self.upper(),other.upper()))
+
+    def __invert__(self):
+        return Rdm(self.upper(),self.lower())
+
+    def __neg__(self):
+        return Rdm(-self.upper(),-self.lower())
+
     def __eq__(self,other):
         other = self.__checkValue(other)
         if((other.lower() == self.lower()) and (other.upper() == self.upper())):
             return True
         else:
             return False
+
+    def __contains__(self,other):
+        if(type(other) is not Rdm):
+            if(self.lower() <= other and self.upper() >= other):
+                return True
+            else:
+                return False
+        else:
+            if((other.lower() >= self.lower()) and (self.upper() >= other.upper())):
+                return True
+            else:
+                return False
+
+    def __lt__(self,other):
+        other = self.__checkValue(other)
+        if((self.lower() < other.lower()) and (self.upper() < other.upper())):
+            return True
+        else:
+            return False
+
+    def __le__(self,other):
+        other = self.__checkValue(other)
+        if((self.lower() <= other.lower()) and (self.upper() <= other.upper())):
+            return True
+        else:
+            return False
+
+    def __gt__(self,other):
+        other = self.__checkValue(other)
+        if((self.lower() > other.lower()) and (self.upper() > other.upper())):
+            return True
+        else:
+            return False
+
+    def __ge__(self,other):
+        other = self.__checkValue(other)
+        if((self.lower() >= other.lower()) and (self.upper() >= other.upper())):
+            return True
+        else:
+            return False
+
+    __truediv__ = __div__
+    __ror__ = __or__
+    __rand__ = __and__
+    __rpow__ = __pow__
