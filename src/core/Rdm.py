@@ -26,6 +26,7 @@ class Rdm(object):
         self._alpha = precision
         self._lower = np.float64(x)
         self._upper = np.float64(x) if y is None  else np.float64(y)
+        #self.__isEmpty = True
         self._f = lambda alpha: self._lower + alpha*(self._upper - self._lower) 
 
     def lower(self):
@@ -39,8 +40,8 @@ class Rdm(object):
             other = Rdm(other,None)
         return other
 
-    def isEmpty(self):
-        return self.__isEmpty
+    #def isEmpty(self):
+    #    return self.__isEmpty
 
     def __str__(self):
         return "["+str(self._lower)+", "+str(self._upper)+"]"
@@ -129,6 +130,7 @@ class Rdm(object):
         return Rdm(min(values),max(values))
 
     #control
+    '''
     def __checkValue(self,other):
         if(type(other) is not Rdm):
             other = Rdm(other)
@@ -138,7 +140,8 @@ class Rdm(object):
     def __validateDefinedValue(self,other):
         if(other.isEmpty or self.isEmpty):
             raise UndefinedValueIntervalError("Invalid operation! The interval are empty.")
-
+    '''
+    
     #complementary and unary operations 
     def __pow__(self,other):
         other = self.__checkValue(other)

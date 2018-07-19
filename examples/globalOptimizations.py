@@ -80,7 +80,7 @@ def ackley( x, a=20, b=0.2, c=2*ria.PI ):
     s1 = sum( [v**2 for v in x])
     s2 = sum( [ria.cos( c * v ) for v in x])
     
-    return (0-a)*ria.exp( -b*( s1 / n )**(1.0/2.0)) - ria.exp( s2 / n ) + a + ria.exp(1)
+    return -a*ria.exp( -b*( s1 / n )**(1.0/2.0)) - ria.exp( s2 / n ) + a + ria.exp(1)
 
 #...............................................................................
 def dixonprice( x ):  # dp.m
@@ -129,7 +129,7 @@ def michalewicz( x ):  # mich.m
     t2 = [ria.sin( j[i] * x[i]**2 / ria.PI ) for i in range(len(x))]
     t3 = [t1[i] * t2[i]**((2 * michalewicz_m)) for i in range(len(t1))]
 
-    return 0 - sum(t3)
+    return - sum(t3)
 
 #...............................................................................
 def perm( x, b=.5 ):
