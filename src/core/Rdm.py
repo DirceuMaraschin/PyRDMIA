@@ -11,10 +11,10 @@ defined following the original concepts of RDM arithmetic.
 
 import numpy as np
 import sys
-from kaucherpy.support.error import IntervalError
-from kaucherpy.support.error import TypeIntervalError
-from kaucherpy.support.error import UndefinedValueIntervalError
-from kaucherpy.support.error import IntervalDivisionByZero
+from pyrdmia.support.error import IntervalError
+from pyrdmia.support.error import TypeIntervalError
+from pyrdmia.support.error import UndefinedValueIntervalError
+from pyrdmia.support.error import IntervalDivisionByZero
 
 class Rdm(object):
     _lower = 0.0 

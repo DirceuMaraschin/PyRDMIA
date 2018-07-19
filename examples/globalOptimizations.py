@@ -129,7 +129,7 @@ def michalewicz( x ):  # mich.m
     t2 = [ria.sin( j[i] * x[i]**2 / ria.PI ) for i in range(len(x))]
     t3 = [t1[i] * t2[i]**((2 * michalewicz_m)) for i in range(len(t1))]
 
-    return - sum(t3)
+    return 0 - sum(t3)
 
 #...............................................................................
 def perm( x, b=.5 ):
