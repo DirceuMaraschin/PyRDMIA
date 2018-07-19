@@ -39,6 +39,9 @@ class Rdm(object):
             other = Rdm(other,None)
         return other
 
+    def isEmpty(self):
+        return self.__isEmpty
+
     def __str__(self):
         return "["+str(self._lower)+", "+str(self._upper)+"]"
 
