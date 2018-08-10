@@ -243,23 +243,23 @@ def saddle( x ):
 allfuncs = [
     ackley,
     dixonprice,
-    ellipse,
-    griewank,
-    levy,
-    michalewicz,  # min < 0
-    nesterov,
-    perm,
-    powell,
+    #ellipse,
+    #griewank,
+    #levy,
+    #michalewicz,  # min < 0
+    #nesterov,
+    #perm,
+    #powell,
     # powellsincos,  # many local mins
-    powersum,
-    rastrigin,
-    rosenbrock,
-    schwefel,  # many local mins
-    sphere,
+    #powersum,
+    #rastrigin,
+    #rosenbrock,
+    #schwefel,  # many local mins
+    #sphere,
     #saddle,
-    sum2,
-    trid,  # min < 0
-    zakharov,
+    #sum2,
+    #trid,  # min < 0
+    #zakharov,
     ]
 
 '''
@@ -290,23 +290,22 @@ name_to_func = { f.__name__ : f  for f in allfuncs }
     # getbounds evals ["-dim", "dim"]
 ackley._bounds       = [-15, 30]
 dixonprice._bounds   = [-10, 10]
-griewank._bounds     = [-600, 600]
-levy._bounds         = [-10, 10]
-michalewicz._bounds  = [0, pi]
-perm._bounds         = ["-dim", "dim"]  # min at [1 2 .. n]
-powell._bounds       = [-4, 5]  # min at tile [3 -1 0 1]
-powersum._bounds     = [0, "dim"]  # 4d min at [1 2 3 4]
-rastrigin._bounds    = [-5.12, 5.12]
-rosenbrock._bounds   = [-2.4, 2.4]  # wikipedia
-schwefel._bounds     = [-500.0, 500.0]
-sphere._bounds       = [-5.12, 5.12]
-sum2._bounds         = [-10, 10]
-trid._bounds         = ["-dim**2", "dim**2"]  # fmin -50 6d, -200 10d
-zakharov._bounds     = [-5, 10]
-
-ellipse._bounds      =  [-2, 2]
+#ellipse._bounds      =  [-2, 2]
+#griewank._bounds     = [-600, 600]
+#levy._bounds         = [-10, 10]
+#michalewicz._bounds  = [0, pi]
+#perm._bounds         = ["-dim", "dim"]  # min at [1 2 .. n]
+#powell._bounds       = [-4, 5]  # min at tile [3 -1 0 1]
+#powersum._bounds     = [0, "dim"]  # 4d min at [1 2 3 4]
+#rastrigin._bounds    = [-5.12, 5.12]
+#rosenbrock._bounds   = [-2.4, 2.4]  # wikipedia
+#schwefel._bounds     = [-500.0, 500.0]
+#sphere._bounds       = [-5.12, 5.12]
+#sum2._bounds         = [-10, 10]
+#trid._bounds         = ["-dim**2", "dim**2"]  # fmin -50 6d, -200 10d
+#zakharov._bounds     = [-5, 10]
 #logsumexp._bounds    = [-20, 20]  # ?
-nesterov._bounds     = [-2, 2]
+#nesterov._bounds     = [-2, 2]
 #powellsincos._bounds = [ "-20*pi*dim", "20*pi*dim"]
 #randomquad._bounds   = [-10000, 10000]
 #saddle._bounds       = [-3, 3]
@@ -368,11 +367,11 @@ if __name__ == "__main__":  # standalone test --
     import sys
     import json
 
-    dims = [2]#[2,4,6,8] #dimensions
-    nstep = 60  #iterations
+    dims = [2,4] #[2,4,6,8] #dimensions
+    nstep = 200  #iterations
     seed = 1 
-    init = 10 #50
-    rdmia.setDotPrecision(2)
+    init = 1
+    rdmia.setDotPrecision(0.5) 
     print ("PRECISION: ",rdmia.precision())
     
     problems = {}

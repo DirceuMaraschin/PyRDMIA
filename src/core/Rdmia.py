@@ -21,7 +21,7 @@ class Rdmia(object):
 
     @staticmethod
     def setDotPrecision(val):
-       Rdmia._precision = 10**(-val)
+       Rdmia._precision = val#10**(-val)
 
     @staticmethod
     def one():

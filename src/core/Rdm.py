@@ -93,15 +93,6 @@ class Rdm(object):
             return Rdm(min(values),max(values))
 
     #default operations given that possibly an initial number is not an RDM number
-    def __rdiv__(self,other):
-        other = self.__checkValue(other)
-        values = []
-        rupper = 1+self._alpha
-        for alpha_self in np.arange(0,rupper,self._alpha):
-            for alpha_other in np.arange(0,rupper,self._alpha):
-                values.append(other._f(alpha_other) / self._f(alpha_self))
-        return Rdm(min(values),max(values))
-
     def __rsub__(self,other):
         other = self.__checkValue(other)
         values = []
@@ -127,6 +118,15 @@ class Rdm(object):
         for alpha_self in np.arange(0,rupper,self._alpha):
             for alpha_other in np.arange(0,rupper,self._alpha):
                 values.append(other._f(alpha_other) * self._f(alpha_self))
+        return Rdm(min(values),max(values))
+
+    def __rdiv__(self,other):
+        other = self.__checkValue(other)
+        values = []
+        rupper = 1+self._alpha
+        for alpha_self in np.arange(0,rupper,self._alpha):
+            for alpha_other in np.arange(0,rupper,self._alpha):
+                values.append(other._f(alpha_other) / self._f(alpha_self))
         return Rdm(min(values),max(values))
 
     #control
@@ -214,6 +214,7 @@ class Rdm(object):
             return False
 
     __truediv__ = __div__
+    __rtruediv__ = __rdiv__
     __ror__ = __or__
     __rand__ = __and__
     __rpow__ = __pow__
