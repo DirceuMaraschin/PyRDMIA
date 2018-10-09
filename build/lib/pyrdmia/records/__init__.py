@@ -21,5 +21,4 @@ Intelligent Systems / CDTec / UFPel (Brazil) by Dirceu Maraschin Jr
 and Lucas Mendes Tortelli as free opensource.
 '''
 
-from .Rdmia import *
-from .Rdm import *
+from .SimpleArray import *
