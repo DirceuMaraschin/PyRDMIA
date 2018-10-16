@@ -9,7 +9,7 @@ precision of operation in calculations using PyRDMIA.
 '''
 from __future__ import print_function
 from .Rdm import *
-from pyrdmia.support import QualitativeMetrics as qm
+from pyrdmia.utils import QualitativeMetrics as qm
 import itertools, copy
 
 class Rdmia(object):

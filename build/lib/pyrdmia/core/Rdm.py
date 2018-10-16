@@ -56,32 +56,45 @@ class Rdm(object):
     def __iter__(self):
         raise TypeError
 
+        
     #Default operations since they are all or initially RDM numbers.
     def __add__(self,other):
         other = self.__checkValue(other)
         values = []
         rupper = 1+self._alpha
-        for alpha_self in np.arange(0,rupper,self._alpha):
-            for alpha_other in np.arange(0,rupper,self._alpha):
-                values.append(self._f(alpha_self) + other._f(alpha_other))
+        if(id(self) != id(other)):
+            for alpha_self in np.arange(0,rupper,self._alpha):
+                for alpha_other in np.arange(0,rupper,self._alpha):
+                    values.append(self._f(alpha_self) + other._f(alpha_other))
+        else:
+            for alpha in np.arange(0,rupper,self._alpha):
+                values.append(self._f(alpha) + other._f(alpha))
         return Rdm(min(values),max(values))
 
     def __sub__(self,other):
         other = self.__checkValue(other)
         values = []
         rupper = 1+self._alpha
-        for alpha_self in np.arange(0,rupper,self._alpha):
-            for alpha_other in np.arange(0,rupper,self._alpha):
-                values.append(self._f(alpha_self) - other._f(alpha_other))
+        if(id(self) != id(other)):
+            for alpha_self in np.arange(0,rupper,self._alpha):
+                for alpha_other in np.arange(0,rupper,self._alpha):
+                    values.append(self._f(alpha_self) - other._f(alpha_other))
+        else:
+            for alpha in np.arange(0,rupper,self._alpha):
+                values.append(self._f(alpha) - other._f(alpha))
         return Rdm(min(values),max(values))
 
     def __mul__(self,other):
         other = self.__checkValue(other)
         values = []
         rupper = 1+self._alpha
-        for alpha_self in np.arange(0,rupper,self._alpha):
-            for alpha_other in np.arange(0,rupper,self._alpha):
-                values.append(self._f(alpha_self) * other._f(alpha_other))
+        if(id(self) != id(other)):
+            for alpha_self in np.arange(0,rupper,self._alpha):
+                for alpha_other in np.arange(0,rupper,self._alpha):
+                    values.append(self._f(alpha_self) * other._f(alpha_other))
+        else:
+            for alpha in np.arange(0,rupper,self._alpha):
+                values.append(self._f(alpha) + other._f(alpha))
         return Rdm(min(values),max(values))
 
     def __div__(self,other):
@@ -91,9 +104,13 @@ class Rdm(object):
         else:            
             values = []
             rupper = 1+self._alpha
-            for alpha_self in np.arange(0,rupper,self._alpha):
-                for alpha_other in np.arange(0,rupper,self._alpha):
-                    values.append(self._f(alpha_self) / other._f(alpha_other))
+            if(id(self) != id(other)):
+                for alpha_self in np.arange(0,rupper,self._alpha):
+                    for alpha_other in np.arange(0,rupper,self._alpha):
+                        values.append(self._f(alpha_self) / other._f(alpha_other))
+            else:
+                for alpha in np.arange(0,rupper,self._alpha):
+                    values.append(self._f(alpha) / other._f(alpha))
             return Rdm(min(values),max(values))
 
     #default operations given that possibly an initial number is not an RDM number
@@ -101,36 +118,52 @@ class Rdm(object):
         other = self.__checkValue(other)
         values = []
         rupper = 1+self._alpha
-        for alpha_self in np.arange(0,rupper,self._alpha):
-            for alpha_other in np.arange(0,rupper,self._alpha):
-                values.append(other._f(alpha_other) - self._f(alpha_self))
+        if(id(self) != id(other)):
+            for alpha_self in np.arange(0,rupper,self._alpha):
+                for alpha_other in np.arange(0,rupper,self._alpha):
+                    values.append(other._f(alpha_other) - self._f(alpha_self))
+        else:
+            for alpha in np.arange(0,rupper,self._alpha):
+                values.append(other._f(alpha) - self._f(alpha))
         return Rdm(min(values),max(values))
 
     def __radd__(self,other):
         other = self.__checkValue(other)
         values = []
         rupper = 1+self._alpha
-        for alpha_self in np.arange(0,rupper,self._alpha):
-            for alpha_other in np.arange(0,rupper,self._alpha):
-                values.append(other._f(alpha_other) + self._f(alpha_self))
+        if(id(self) != id(other)):
+            for alpha_self in np.arange(0,rupper,self._alpha):
+                for alpha_other in np.arange(0,rupper,self._alpha):
+                    values.append(other._f(alpha_other) + self._f(alpha_self))
+        else:
+            for alpha in np.arange(0,rupper,self._alpha):
+                values.append(other._f(alpha) + self._f(alpha))
         return Rdm(min(values),max(values))
 
     def __rmul__(self,other):
         other = self.__checkValue(other)
         values = []
         rupper = 1+self._alpha
-        for alpha_self in np.arange(0,rupper,self._alpha):
-            for alpha_other in np.arange(0,rupper,self._alpha):
-                values.append(other._f(alpha_other) * self._f(alpha_self))
+        if(id(self) != id(other)):
+            for alpha_self in np.arange(0,rupper,self._alpha):
+                for alpha_other in np.arange(0,rupper,self._alpha):
+                    values.append(other._f(alpha_other) * self._f(alpha_self))
+        else:
+            for alpha in np.arange(0,rupper,self._alpha):
+                values.append(other._f(alpha) * self._f(alpha))
         return Rdm(min(values),max(values))
 
     def __rdiv__(self,other):
         other = self.__checkValue(other)
         values = []
         rupper = 1+self._alpha
-        for alpha_self in np.arange(0,rupper,self._alpha):
-            for alpha_other in np.arange(0,rupper,self._alpha):
-                values.append(other._f(alpha_other) / self._f(alpha_self))
+        if(id(self) != id(other)):
+            for alpha_self in np.arange(0,rupper,self._alpha):
+                for alpha_other in np.arange(0,rupper,self._alpha):
+                    values.append(other._f(alpha_other) / self._f(alpha_self))
+        else:
+            for alpha in np.arange(0,rupper,self._alpha):
+                values.append(other._f(alpha) / self._f(alpha))
         return Rdm(min(values),max(values))
 
     #control
@@ -151,9 +184,13 @@ class Rdm(object):
         other = self.__checkValue(other)
         values = []
         rupper = 1+self._alpha
-        for alpha_self in np.arange(0,rupper,self._alpha):
-            for alpha_other in np.arange(0,rupper,self._alpha):
-                values.append(self._f(alpha_self) ** other._f(alpha_other))
+        if(id(self) != id(other)):
+            for alpha_self in np.arange(0,rupper,self._alpha):
+                for alpha_other in np.arange(0,rupper,self._alpha):
+                    values.append(self._f(alpha_self) ** other._f(alpha_other))
+        else:
+            for alpha in np.arange(0,rupper,self._alpha):
+                values.append(self._f(alpha) ** other._f(alpha))
         return Rdm(min(values),max(values))
 
     def __or__(self, other):

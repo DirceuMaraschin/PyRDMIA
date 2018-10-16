@@ -9,6 +9,7 @@ precision of operation in calculations using PyRDMIA.
 '''
 from __future__ import print_function
 from .Rdm import *
+from pyrdmia.utils import QualitativeMetrics as qm
 import itertools, copy
 
 class Rdmia(object):
@@ -57,15 +58,6 @@ class Rdmia(object):
         arr.data = data
         arr.shape = tuple(arr.shape)
         return arr
-
-    @staticmethod
-    def midPointMatrix(data):
-        for i in range(data.shape[0]):
-            for k in range(data.shape[1]):
-                if(type(data.data[i][k]) is Rdm):
-                    data.data[i][k] = rdmia.number(qm.midpoint(data.data[i][k]))
-                
-        return data
 
     @staticmethod
     def zeros(shape):
@@ -121,7 +113,14 @@ class SimpleArray(object):
 
 	def __repr__(self):
 		return (self.__class__.__name__+"("+self.data+")")
-
+	
+	@property
+	def midPointMatrix(self):
+		for i in range(self.data.shape[0]):
+			for k in range(self.data.shape[1]):
+				if(type(self.data.data[i][k]) is Rdm):
+					self.data.data[i][k] = Rdmia.number(qm.midpoint(self.data.data[i][k]))
+		return self.data
 
 	def __str__(self):
 		#print (self.data)
@@ -253,92 +252,68 @@ class SimpleArray(object):
 	def copy(self):
 		return Rdmia.array(copy.deepcopy(self.data))
 
-def perm_parity(lst):
-	'''\
-	Given a permutation of the digits 0..N in order as a list, 
-	returns its parity (or sign): +1 for even parity; -1 for odd.
-	From https://code.activestate.com/recipes/578227-generate-the-parity-or-sign-of-a-permutation/
-	'''
-	parity = 1
-	for i in range(0,len(lst)-1):
-		if lst[i] != i:
-			parity *= -1
-			mn = min(range(i,len(lst)), key=lst.__getitem__)
-			lst[i],lst[mn] = lst[mn],lst[i]
-	return parity	
+	def _adjugate(self,mat):
+		if not isinstance(mat, SimpleArray) and Rdmia.isiterable(mat):		
+			mat = Rdmia.array(mat)
+		#Find the adjugate matrix
+		if len(mat.shape) != 2:
+			raise NotImplementedError("Only implemented for 2D matricies")
+		result = Rdmia.zeros(mat.shape)
+		for i in range(mat.shape[0]):
+			for j in range(mat.shape[1]):
+				submat = delete(mat, [j], 0)
+				submat2 = delete(submat, [i], 1)
+				result.data[i][j] = ((-1)**(i+j))*det(submat2)
+		return result
 
-def det(mat):
-	if not isinstance(mat, SimpleArray) and Rdmia.isiterable(mat):		
-		mat = Rdmia.array(mat)
-	if len(mat.shape) != 2:
-		raise NotImplementedError("Only implemented for 2D matricies")
-	if mat.shape[0] != mat.shape[1]:
-		raise ValueError("Matrix must be square")
-	n = mat.shape[0]
-	
-	#Leibniz formula for the determinant
-	total2 = 0.0
-	for perm in itertools.permutations(range(n)):
-		total1 = 1.0
-		for i, j in zip(range(n), perm):
-			total1 *= mat.data[i][j]
-		total2 += perm_parity(list(perm)) * total1
-	return total2
+	#Implementar internamente quando uma matriz e mto graned
+	@property
+	def inverse(self):
+		eps=1e-8
+		#Find inverse based on find the adjugate matrix
+		#which is inefficient for large matrices.
+		if not isinstance(self.data, SimpleArray) and Rdmia.isiterable(self.data):		
+			mat = Rdmia.array(self.data)
+		if len(self.data.shape) != 2:
+			raise NotImplementedError("Only implemented for 2D matricies")
+		if self.data.shape[0] != self.data.shape[1]:
+			raise ValueError("Matrix must be square")
+		mdet = self.data.det
+		if (type(mdet) is Rdm):
+			mdet = qm.midpoint(mdet)
+		if abs(mdet) < eps:
+			raise RuntimeError("Matrix is not invertible (its determinant is zero)")
+		return self._adjugate(self.data) * (1.0 / float(mdet))
 
-def delete(mat, ind, axis=0):
-	if not isinstance(mat, SimpleArray) and Rdmia.isiterable(mat):		
-		mat = Rdmia.array(mat)
-	newShape = list(mat.shape)[:]
-	newShape[axis] -= len(ind)
-	result = Rdmia.zeros(newShape)
-	def CopyWithDelete(currentAxis, ind, axis, matdata, resultData):
-		if currentAxis < len(mat.shape)-1:
-			count = 0
-			for i, data in enumerate(matdata):
-				if currentAxis == axis and i in ind:
-					continue
-				CopyWithDelete(currentAxis + 1, ind, axis, data, resultData[count])
-				count += 1
-		else:
-			count = 0
-			for i, val in enumerate(matdata):
-				if currentAxis == axis and i in ind:
-					continue
-				resultData[count] = val
-				count += 1
+	@property
+	def det(self):
+		if not isinstance(self.data, SimpleArray) and Rdmia.isiterable(self.data):		
+			self.data = Rdmia.array(self.data)
+		if len(self.data.shape) != 2:
+			raise NotImplementedError("Only implemented for 2D matricies")
+		if self.data.shape[0] != self.data.shape[1]:
+			raise ValueError("Matrix must be square")
+		n = self.data.shape[0]
+		
+		#Leibniz formula for the determinant
+		total2 = 0.0
+		for perm in itertools.permutations(range(n)):
+			total1 = 1.0
+			for i, j in zip(range(n), perm):
+				total1 *= self.data.data[i][j]
+			total2 += self._perm_parity(list(perm)) * total1
+		return total2
+		
+	def _perm_parity(self,lst):
+		parity = 1
+		for i in range(0,len(lst)-1):
+			if lst[i] != i:
+				parity *= -1
+				mn = min(range(i,len(lst)), key=lst.__getitem__)
+				lst[i],lst[mn] = lst[mn],lst[i]
+		return parity	
 
-	CopyWithDelete(0, ind, axis, mat.data, result.data)
-	return result
 
-def adjugate(mat):
-	if not isinstance(mat, SimpleArray) and Rdmia.isiterable(mat):		
-		mat = Rdmia.array(mat)
-	#Find the adjugate matrix
-	if len(mat.shape) != 2:
-		raise NotImplementedError("Only implemented for 2D matricies")
-	result = Rdmia.zeros(mat.shape)
-	for i in range(mat.shape[0]):
-		for j in range(mat.shape[1]):
-			submat = delete(mat, [j], 0)
-			submat2 = delete(submat, [i], 1)
-			result.data[i][j] = ((-1)**(i+j))*det(submat2)
-	return result
-
-def inv_by_adjugate(mat, eps=1e-8):
-	#Find inverse based on find the adjugate matrix
-	#which is inefficient for large matrices.
-	if not isinstance(mat, SimpleArray) and Rdmia.isiterable(mat):		
-		mat = Rdmia.array(mat)
-	if len(mat.shape) != 2:
-		raise NotImplementedError("Only implemented for 2D matricies")
-	if mat.shape[0] != mat.shape[1]:
-		raise ValueError("Matrix must be square")
-	mdet = det(mat)
-	if (type(mdet) is Rdm):
-		mdet = qm.midpoint(mdet)
-	if abs(mdet) < eps:
-		raise RuntimeError("Matrix is not invertible (its determinant is zero)")
-	return adjugate(mat) * (1.0 / float(mdet))
 
 def inv_by_gauss_jordan(mat, eps=1e-8):
 	#Find inverse based on gauss-jordan elimination.

@@ -9,16 +9,11 @@ import math
 __all__ = ["RMath"]
 
 class RMath(object):
-    
-    
-    def __init__(self):
-        self.E = rdmia.number(math.e)
-        self.PI = rdmia.number(math.pi)
 
     #convert degrees to radians
     @staticmethod
     def degToRad(value):
-        #rad = (value/180)*RMath.PI
+        #rad = (value/180)*math.pi
         rad = 0
         if (type(value) is Rdm):
             rad = math.radians(qm.midpoint(value))
@@ -56,7 +51,7 @@ class RMath(object):
     #exponential
     @staticmethod
     def exp(x):
-        return RMath.E**x
+        return math.e**x
 
     #square root
     @staticmethod
@@ -89,12 +84,12 @@ class RMath(object):
     #hyperbolic sine xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     @staticmethod
     def sinh(value):
-        return (RMath.exp(value)/2)-(RMath.exp(-(value))/2)
+        return (RMath.exp(value)/2.0)-(RMath.exp(-(value))/2.0)
 
     #hyperbolic cosine xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     @staticmethod
     def cosh(value):
-        return (RMath.exp(-(value))/2)+(RMath.exp(value)/2)
+        return (RMath.exp(-(value))/2.0)+(RMath.exp(value)/2.0)
 
     #hyperbolic tangent xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     @staticmethod
@@ -104,12 +99,12 @@ class RMath(object):
     #hyperbolic secant xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     @staticmethod
     def sech(value):
-        return 1/RMath.cosh(value)
+        return 1.0/RMath.cosh(value)
 
     #hyperbolic cosecant xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     @staticmethod
     def csch(value):
-        return 1/RMath.sinh(value)
+        return 1.0/RMath.sinh(value)
 
     #hyperbolic cotangent xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     @staticmethod
