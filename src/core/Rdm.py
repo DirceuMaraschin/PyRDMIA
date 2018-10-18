@@ -15,6 +15,8 @@ from pyrdmia.support.error import IntervalError
 from pyrdmia.support.error import TypeIntervalError
 from pyrdmia.support.error import UndefinedValueIntervalError
 from pyrdmia.support.error import IntervalDivisionByZero
+from threading import Thread
+import threading
 
 class Rdm(object):
     _lower = 0.0 
@@ -36,8 +38,8 @@ class Rdm(object):
         return self._upper
 
     def __checkValue(self,other):
-        if(type(other) is not Rdm):
-            other = Rdm(other,None)
+        if(type(other) is not RdmThread):
+            other = RdmThread(other,None)
         return other
 
     #def isEmpty(self):
@@ -52,50 +54,53 @@ class Rdm(object):
     def __getitem__(self):
         return np.array([self._lower,self._upper])
 
+    def __operation__(self,alpha_self,other,operation,r,values):
+        if(operation == "ADD"):
+            if(not r):    
+                for alpha_other in np.arange(0,(1+self._alpha),self._alpha):
+                    values.append(self._f(alpha_self) + other._f(alpha_other))
+                
 
-    def __iter__(self):
-        raise TypeError
+        #elif(operation == "SUB")
+        #elif(operation == "MUL")
+        #elif(operation == "DIV")
+        #elif(operation == "EXP")
 
-        
+
     #Default operations since they are all or initially RDM numbers.
     def __add__(self,other):
         other = self.__checkValue(other)
         values = []
-        rupper = 1+self._alpha
-        if(id(self) != id(other)):
-            for alpha_self in np.arange(0,rupper,self._alpha):
-                for alpha_other in np.arange(0,rupper,self._alpha):
-                    values.append(self._f(alpha_self) + other._f(alpha_other))
-        else:
-            for alpha in np.arange(0,rupper,self._alpha):
-                values.append(self._f(alpha) + other._f(alpha))
-        return Rdm(min(values),max(values))
+        v = 0
+        rdmOperation = []
+
+        for alpha_self in np.arange(0,(1+self._alpha),self._alpha):
+            rdmOperation.append(Thread(target=self.__operation__,args=[alpha_self,other,"ADD",False,values]))
+            rdmOperation[v].start()
+            v+=1
+
+        for i in range(len(rdmOperation)):
+            rdmOperation[i].join()
+
+        return RdmThread(min(values),max(values))
 
     def __sub__(self,other):
         other = self.__checkValue(other)
         values = []
         rupper = 1+self._alpha
-        if(id(self) != id(other)):
-            for alpha_self in np.arange(0,rupper,self._alpha):
-                for alpha_other in np.arange(0,rupper,self._alpha):
-                    values.append(self._f(alpha_self) - other._f(alpha_other))
-        else:
-            for alpha in np.arange(0,rupper,self._alpha):
-                values.append(self._f(alpha) - other._f(alpha))
-        return Rdm(min(values),max(values))
+        for alpha_self in np.arange(0,rupper,self._alpha):
+            for alpha_other in np.arange(0,rupper,self._alpha):
+                values.append(self._f(alpha_self) - other._f(alpha_other))
+        return RdmThread(min(values),max(values))
 
     def __mul__(self,other):
         other = self.__checkValue(other)
         values = []
         rupper = 1+self._alpha
-        if(id(self) != id(other)):
-            for alpha_self in np.arange(0,rupper,self._alpha):
-                for alpha_other in np.arange(0,rupper,self._alpha):
-                    values.append(self._f(alpha_self) * other._f(alpha_other))
-        else:
-            for alpha in np.arange(0,rupper,self._alpha):
-                values.append(self._f(alpha) + other._f(alpha))
-        return Rdm(min(values),max(values))
+        for alpha_self in np.arange(0,rupper,self._alpha):
+            for alpha_other in np.arange(0,rupper,self._alpha):
+                values.append(self._f(alpha_self) * other._f(alpha_other))
+        return RdmThread(min(values),max(values))
 
     def __div__(self,other):
         other = self.__checkValue(other)
@@ -104,73 +109,53 @@ class Rdm(object):
         else:            
             values = []
             rupper = 1+self._alpha
-            if(id(self) != id(other)):
-                for alpha_self in np.arange(0,rupper,self._alpha):
-                    for alpha_other in np.arange(0,rupper,self._alpha):
-                        values.append(self._f(alpha_self) / other._f(alpha_other))
-            else:
-                for alpha in np.arange(0,rupper,self._alpha):
-                    values.append(self._f(alpha) / other._f(alpha))
-            return Rdm(min(values),max(values))
+            for alpha_self in np.arange(0,rupper,self._alpha):
+                for alpha_other in np.arange(0,rupper,self._alpha):
+                    values.append(self._f(alpha_self) / other._f(alpha_other))
+            return RdmThread(min(values),max(values))
 
     #default operations given that possibly an initial number is not an RDM number
     def __rsub__(self,other):
         other = self.__checkValue(other)
         values = []
         rupper = 1+self._alpha
-        if(id(self) != id(other)):
-            for alpha_self in np.arange(0,rupper,self._alpha):
-                for alpha_other in np.arange(0,rupper,self._alpha):
-                    values.append(other._f(alpha_other) - self._f(alpha_self))
-        else:
-            for alpha in np.arange(0,rupper,self._alpha):
-                values.append(other._f(alpha) - self._f(alpha))
-        return Rdm(min(values),max(values))
+        for alpha_self in np.arange(0,rupper,self._alpha):
+            for alpha_other in np.arange(0,rupper,self._alpha):
+                values.append(other._f(alpha_other) - self._f(alpha_self))
+        return RdmThread(min(values),max(values))
 
     def __radd__(self,other):
         other = self.__checkValue(other)
         values = []
         rupper = 1+self._alpha
-        if(id(self) != id(other)):
-            for alpha_self in np.arange(0,rupper,self._alpha):
-                for alpha_other in np.arange(0,rupper,self._alpha):
-                    values.append(other._f(alpha_other) + self._f(alpha_self))
-        else:
-            for alpha in np.arange(0,rupper,self._alpha):
-                values.append(other._f(alpha) + self._f(alpha))
-        return Rdm(min(values),max(values))
+        for alpha_self in np.arange(0,rupper,self._alpha):
+            for alpha_other in np.arange(0,rupper,self._alpha):
+                values.append(other._f(alpha_other) + self._f(alpha_self))
+        return RdmThread(min(values),max(values))
 
     def __rmul__(self,other):
         other = self.__checkValue(other)
         values = []
         rupper = 1+self._alpha
-        if(id(self) != id(other)):
-            for alpha_self in np.arange(0,rupper,self._alpha):
-                for alpha_other in np.arange(0,rupper,self._alpha):
-                    values.append(other._f(alpha_other) * self._f(alpha_self))
-        else:
-            for alpha in np.arange(0,rupper,self._alpha):
-                values.append(other._f(alpha) * self._f(alpha))
-        return Rdm(min(values),max(values))
+        for alpha_self in np.arange(0,rupper,self._alpha):
+            for alpha_other in np.arange(0,rupper,self._alpha):
+                values.append(other._f(alpha_other) * self._f(alpha_self))
+        return RdmThread(min(values),max(values))
 
     def __rdiv__(self,other):
         other = self.__checkValue(other)
         values = []
         rupper = 1+self._alpha
-        if(id(self) != id(other)):
-            for alpha_self in np.arange(0,rupper,self._alpha):
-                for alpha_other in np.arange(0,rupper,self._alpha):
-                    values.append(other._f(alpha_other) / self._f(alpha_self))
-        else:
-            for alpha in np.arange(0,rupper,self._alpha):
-                values.append(other._f(alpha) / self._f(alpha))
-        return Rdm(min(values),max(values))
+        for alpha_self in np.arange(0,rupper,self._alpha):
+            for alpha_other in np.arange(0,rupper,self._alpha):
+                values.append(other._f(alpha_other) / self._f(alpha_self))
+        return RdmThread(min(values),max(values))
 
     #control
     '''
     def __checkValue(self,other):
-        if(type(other) is not Rdm):
-            other = Rdm(other)
+        if(type(other) is not RdmThread):
+            other = RdmThread(other)
         self.__validateDefinedValue(other)
         return other
 
@@ -184,28 +169,24 @@ class Rdm(object):
         other = self.__checkValue(other)
         values = []
         rupper = 1+self._alpha
-        if(id(self) != id(other)):
-            for alpha_self in np.arange(0,rupper,self._alpha):
-                for alpha_other in np.arange(0,rupper,self._alpha):
-                    values.append(self._f(alpha_self) ** other._f(alpha_other))
-        else:
-            for alpha in np.arange(0,rupper,self._alpha):
-                values.append(self._f(alpha) ** other._f(alpha))
-        return Rdm(min(values),max(values))
+        for alpha_self in np.arange(0,rupper,self._alpha):
+            for alpha_other in np.arange(0,rupper,self._alpha):
+                values.append(self._f(alpha_self) ** other._f(alpha_other))
+        return RdmThread(min(values),max(values))
 
     def __or__(self, other):
         other = self.__checkValue(other)
-        return Rdm(max(self.lower(),other.lower()),min(self.upper(),other.upper()))
+        return RdmThread(max(self.lower(),other.lower()),min(self.upper(),other.upper()))
 
     def __and__(self,other):
         other = self.__checkValue(other)
-        return Rdm(min(self.lower(),other.lower()),max(self.upper(),other.upper()))
+        return RdmThread(min(self.lower(),other.lower()),max(self.upper(),other.upper()))
 
     def __invert__(self):
-        return Rdm(self.upper(),self.lower())
+        return RdmThread(self.upper(),self.lower())
 
     def __neg__(self):
-        return Rdm(-self.upper(),-self.lower())
+        return RdmThread(-self.upper(),-self.lower())
 
     def __eq__(self,other):
         other = self.__checkValue(other)
@@ -215,7 +196,7 @@ class Rdm(object):
             return False
 
     def __contains__(self,other):
-        if(type(other) is not Rdm):
+        if(type(other) is not RdmThread):
             if(self.lower() <= other and self.upper() >= other):
                 return True
             else:
