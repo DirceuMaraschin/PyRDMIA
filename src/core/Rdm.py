@@ -93,12 +93,10 @@ class Rdm(object):
             else:
                 #rdiv
                 for alpha_other in np.arange(0,(1+self._alpha),self._alpha):
-                    values.append(other._f(alpha_other) / self._f(alpha_self)
-                    
+                    values.append(other._f(alpha_other) / self._f(alpha_self))
         elif(operation == "POW"):
             for alpha_other in np.arange(0,(1+self._alpha),self._alpha):
                 values.append(self._f(alpha_self) ** other._f(alpha_other))
-
 
 
     #Default operations since they are all or initially RDM numbers.
