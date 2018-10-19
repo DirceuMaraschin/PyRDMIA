@@ -91,23 +91,19 @@ class Rdmia(object):
             mat.data[i][i] = 1.0
         return mat
 
-
 class SimpleArray(object):
 	def __init__(self):
 		self.shape = []
 		self.data = None
 
-	
 	def _ValidateShape(self, data, ind):
 		if not Rdmia.isiterable(data):
 			return
-
 		if ind >= len(self.shape):
 			self.shape.append(len(data))
 		else:
 			if self.shape[ind] != len(data):
 				raise ValueError("Inconsistent shape")
-		
 		for val in data:
 			self._ValidateShape(val, ind+1)
 
@@ -147,7 +143,6 @@ class SimpleArray(object):
 					bkj = rhs.data[k][j]
 					tot += aik * bkj
 				result.data[i][j] = tot
-
 		return result
 
 	def __add__(self, rhs):
@@ -166,7 +161,6 @@ class SimpleArray(object):
 				ind += 1
 				for ar, br, outr in zip(a, b, out):
 					AddFunc(ind, ar, br, outr)		
-
 		AddFunc(0, self.data, rhs.data, result.data)
 		return result
 
@@ -176,7 +170,6 @@ class SimpleArray(object):
 
 		if isinstance(rhs, self.__class__):
 			#Do element-wise matrix multiplication
-
 			if self.shape != rhs.shape:
 				raise ValueError("Matrix size mismatch")
 			result = Rdmia.zeros(self.shape)
@@ -190,7 +183,6 @@ class SimpleArray(object):
 					ind += 1
 					for ar, br, outr in zip(a, b, out):
 						MultFunc(ind, ar, br, outr)		
-
 			MultFunc(0, self.data, rhs.data, result.data)
 			return result
 		else:
@@ -206,7 +198,6 @@ class SimpleArray(object):
 					ind += 1
 					for ar, outr in zip(a, out):
 						MultFunc2(ind, ar, b, outr)		
-
 			MultFunc2(0, self.data, rhs, result.data)
 			return result
 
@@ -233,7 +224,6 @@ class SimpleArray(object):
 				ind += 1
 				for ar, outr in zip(a, out):
 					AddFunc(ind, ar, outr)		
-
 		AddFunc(0, self.data, result.data)
 		return result
 
@@ -266,7 +256,7 @@ class SimpleArray(object):
 				result.data[i][j] = ((-1)**(i+j))*det(submat2)
 		return result
 
-	#Implementar internamente quando uma matriz e mto graned
+	#Implementar internamente quando uma matriz eh mto grande
 	@property
 	def inverse(self):
 		eps=1e-8
@@ -313,8 +303,6 @@ class SimpleArray(object):
 				lst[i],lst[mn] = lst[mn],lst[i]
 		return parity	
 
-
-
 def inv_by_gauss_jordan(mat, eps=1e-8):
 	#Find inverse based on gauss-jordan elimination.
 
@@ -330,7 +318,6 @@ def inv_by_gauss_jordan(mat, eps=1e-8):
 		mdet = qm.midpoint(mdet)
 	if abs(mdet) < eps:
 		raise RuntimeError("Matrix is not invertible (its determinant is zero)")
-
 	#Create aux matrix
 	n = mat.shape[0]
 	auxmat = Rdmia.identity(n)
@@ -351,12 +338,10 @@ def inv_by_gauss_jordan(mat, eps=1e-8):
 				else:
 					maxv = abs(v)
 				maxind = r
-		
 		if maxind != i:
 			#Swap this to the current row, for numerical stability
 			mat.data[i], mat.data[maxind] = mat.data[maxind], mat.data[i]
 			auxmat.data[i], auxmat.data[maxind] = auxmat.data[maxind], auxmat.data[i]
-
 		activeRow = mat.data[i]
 		activeAuxRow = auxmat.data[i]
 		for r in range(i+1, n):
@@ -366,7 +351,6 @@ def inv_by_gauss_jordan(mat, eps=1e-8):
 			for c in range(n):
 				cursorRow[c] -= scale * activeRow[c]
 				cursorAuxRow[c] -= scale * activeAuxRow[c]
-
 	#Finish elimination
 	for i in range(n-1, -1, -1):
 		activeRow = mat.data[i]
@@ -385,5 +369,4 @@ def inv_by_gauss_jordan(mat, eps=1e-8):
 				for c in range(n):
 					cursorRow[c] -= activeRow[c] * scaling
 					cursorAuxRow[c] -= activeAuxRow[c] * scaling
-			
 	return auxmat

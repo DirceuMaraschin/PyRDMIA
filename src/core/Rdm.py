@@ -57,14 +57,48 @@ class Rdm(object):
     def __operation__(self,alpha_self,other,operation,r,values):
         if(operation == "ADD"):
             if(not r):    
+                #add
                 for alpha_other in np.arange(0,(1+self._alpha),self._alpha):
                     values.append(self._f(alpha_self) + other._f(alpha_other))
-                
+            else:
+                #radd
+                for alpha_other in np.arange(0,(1+self._alpha),self._alpha):
+                    values.append(other._f(alpha_other) + self._f(alpha_self))
 
-        #elif(operation == "SUB")
-        #elif(operation == "MUL")
-        #elif(operation == "DIV")
-        #elif(operation == "EXP")
+        elif(operation == "SUB"):
+            if(not r):    
+                #sub
+                for alpha_other in np.arange(0,(1+self._alpha),self._alpha):
+                    values.append(self._f(alpha_self) - other._f(alpha_other))
+            else:
+                #rsub
+                for alpha_other in np.arange(0,(1+self._alpha),self._alpha):
+                    values.append(other._f(alpha_other) - self._f(alpha_self))
+
+        elif(operation == "MUL"):
+            if(not r):    
+                #mul
+                for alpha_other in np.arange(0,(1+self._alpha),self._alpha):
+                    values.append(self._f(alpha_self) * other._f(alpha_other))
+            else:
+                #rmul
+                for alpha_other in np.arange(0,(1+self._alpha),self._alpha):
+                    values.append(other._f(alpha_other) * self._f(alpha_self))
+
+        elif(operation == "DIV"):
+            if(not r):    
+                #div
+                for alpha_other in np.arange(0,(1+self._alpha),self._alpha):
+                    values.append(self._f(alpha_self) / other._f(alpha_other))
+            else:
+                #rdiv
+                for alpha_other in np.arange(0,(1+self._alpha),self._alpha):
+                    values.append(other._f(alpha_other) / self._f(alpha_self)
+                    
+        elif(operation == "POW"):
+            for alpha_other in np.arange(0,(1+self._alpha),self._alpha):
+                values.append(self._f(alpha_self) ** other._f(alpha_other))
+
 
 
     #Default operations since they are all or initially RDM numbers.
@@ -73,82 +107,104 @@ class Rdm(object):
         values = []
         v = 0
         rdmOperation = []
-
         for alpha_self in np.arange(0,(1+self._alpha),self._alpha):
             rdmOperation.append(Thread(target=self.__operation__,args=[alpha_self,other,"ADD",False,values]))
             rdmOperation[v].start()
             v+=1
-
         for i in range(len(rdmOperation)):
             rdmOperation[i].join()
-
         return RdmThread(min(values),max(values))
 
     def __sub__(self,other):
         other = self.__checkValue(other)
         values = []
-        rupper = 1+self._alpha
-        for alpha_self in np.arange(0,rupper,self._alpha):
-            for alpha_other in np.arange(0,rupper,self._alpha):
-                values.append(self._f(alpha_self) - other._f(alpha_other))
+        v = 0
+        rdmOperation = []
+        for alpha_self in np.arange(0,(1+self._alpha),self._alpha):
+            rdmOperation.append(Thread(target=self.__operation__,args=[alpha_self,other,"SUB",False,values]))
+            rdmOperation[v].start()
+            v+=1
+        for i in range(len(rdmOperation)):
+            rdmOperation[i].join()
         return RdmThread(min(values),max(values))
 
     def __mul__(self,other):
         other = self.__checkValue(other)
         values = []
-        rupper = 1+self._alpha
-        for alpha_self in np.arange(0,rupper,self._alpha):
-            for alpha_other in np.arange(0,rupper,self._alpha):
-                values.append(self._f(alpha_self) * other._f(alpha_other))
+        v = 0
+        rdmOperation = []
+        for alpha_self in np.arange(0,(1+self._alpha),self._alpha):
+            rdmOperation.append(Thread(target=self.__operation__,args=[alpha_self,other,"MUL",False,values]))
+            rdmOperation[v].start()
+            v+=1
+        for i in range(len(rdmOperation)):
+            rdmOperation[i].join()
         return RdmThread(min(values),max(values))
 
     def __div__(self,other):
         other = self.__checkValue(other)
-        if(other.lower()*other.upper() <= 0): #division test by zero
-            raise IntervalDivisionByZero()
-        else:            
-            values = []
-            rupper = 1+self._alpha
-            for alpha_self in np.arange(0,rupper,self._alpha):
-                for alpha_other in np.arange(0,rupper,self._alpha):
-                    values.append(self._f(alpha_self) / other._f(alpha_other))
-            return RdmThread(min(values),max(values))
-
-    #default operations given that possibly an initial number is not an RDM number
-    def __rsub__(self,other):
-        other = self.__checkValue(other)
         values = []
-        rupper = 1+self._alpha
-        for alpha_self in np.arange(0,rupper,self._alpha):
-            for alpha_other in np.arange(0,rupper,self._alpha):
-                values.append(other._f(alpha_other) - self._f(alpha_self))
+        v = 0
+        rdmOperation = []
+        for alpha_self in np.arange(0,(1+self._alpha),self._alpha):
+            rdmOperation.append(Thread(target=self.__operation__,args=[alpha_self,other,"DIV",False,values]))
+            rdmOperation[v].start()
+            v+=1
+        for i in range(len(rdmOperation)):
+            rdmOperation[i].join()
         return RdmThread(min(values),max(values))
 
+    #default operations given that possibly an initial number is not an RDM number
     def __radd__(self,other):
         other = self.__checkValue(other)
         values = []
-        rupper = 1+self._alpha
-        for alpha_self in np.arange(0,rupper,self._alpha):
-            for alpha_other in np.arange(0,rupper,self._alpha):
-                values.append(other._f(alpha_other) + self._f(alpha_self))
+        v = 0
+        rdmOperation = []
+        for alpha_self in np.arange(0,(1+self._alpha),self._alpha):
+            rdmOperation.append(Thread(target=self.__operation__,args=[alpha_self,other,"ADD",True,values]))
+            rdmOperation[v].start()
+            v+=1
+        for i in range(len(rdmOperation)):
+            rdmOperation[i].join()
+        return RdmThread(min(values),max(values))
+
+    def __rsub__(self,other):
+        other = self.__checkValue(other)
+        values = []
+        v = 0
+        rdmOperation = []
+        for alpha_self in np.arange(0,(1+self._alpha),self._alpha):
+            rdmOperation.append(Thread(target=self.__operation__,args=[alpha_self,other,"SUB",True,values]))
+            rdmOperation[v].start()
+            v+=1
+        for i in range(len(rdmOperation)):
+            rdmOperation[i].join()
         return RdmThread(min(values),max(values))
 
     def __rmul__(self,other):
         other = self.__checkValue(other)
         values = []
-        rupper = 1+self._alpha
-        for alpha_self in np.arange(0,rupper,self._alpha):
-            for alpha_other in np.arange(0,rupper,self._alpha):
-                values.append(other._f(alpha_other) * self._f(alpha_self))
+        v = 0
+        rdmOperation = []
+        for alpha_self in np.arange(0,(1+self._alpha),self._alpha):
+            rdmOperation.append(Thread(target=self.__operation__,args=[alpha_self,other,"MUL",True,values]))
+            rdmOperation[v].start()
+            v+=1
+        for i in range(len(rdmOperation)):
+            rdmOperation[i].join()
         return RdmThread(min(values),max(values))
 
     def __rdiv__(self,other):
         other = self.__checkValue(other)
         values = []
-        rupper = 1+self._alpha
-        for alpha_self in np.arange(0,rupper,self._alpha):
-            for alpha_other in np.arange(0,rupper,self._alpha):
-                values.append(other._f(alpha_other) / self._f(alpha_self))
+        v = 0
+        rdmOperation = []
+        for alpha_self in np.arange(0,(1+self._alpha),self._alpha):
+            rdmOperation.append(Thread(target=self.__operation__,args=[alpha_self,other,"DIV",True,values]))
+            rdmOperation[v].start()
+            v+=1
+        for i in range(len(rdmOperation)):
+            rdmOperation[i].join()
         return RdmThread(min(values),max(values))
 
     #control
@@ -168,10 +224,14 @@ class Rdm(object):
     def __pow__(self,other):
         other = self.__checkValue(other)
         values = []
-        rupper = 1+self._alpha
-        for alpha_self in np.arange(0,rupper,self._alpha):
-            for alpha_other in np.arange(0,rupper,self._alpha):
-                values.append(self._f(alpha_self) ** other._f(alpha_other))
+        v = 0
+        rdmOperation = []
+        for alpha_self in np.arange(0,(1+self._alpha),self._alpha):
+            rdmOperation.append(Thread(target=self.__operation__,args=[alpha_self,other,"POW",None,values]))
+            rdmOperation[v].start()
+            v+=1
+        for i in range(len(rdmOperation)):
+            rdmOperation[i].join()
         return RdmThread(min(values),max(values))
 
     def __or__(self, other):

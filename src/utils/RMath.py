@@ -145,6 +145,4 @@ class RMath(object):
 
     def log(x, rnd=0, base=2):
         pass
-
-
 '''
