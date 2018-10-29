@@ -73,7 +73,7 @@ import time
 
 
 #...............................................................................
-def ackley( x, a=20, b=0.2, c=2*ria.PI ):
+def ackley( x, a=20, b=0.2, c=2*ria.PI() ):
     #x = np.asarray_chkfinite(x)  # ValueError if any NaN or Inf
     #print (x)
     n = len(x)
@@ -241,7 +241,7 @@ def saddle( x ):
 
 #-------------------------------------------------------------------------------
 allfuncs = [
-    ackley,
+    #ackley,
     dixonprice,
     #ellipse,
     #griewank,
@@ -288,7 +288,7 @@ name_to_func = { f.__name__ : f  for f in allfuncs }
 
     # bounds from Hedar, used for starting random_in_box too --
     # getbounds evals ["-dim", "dim"]
-ackley._bounds       = [-15, 30]
+#ackley._bounds       = [-15, 30]
 dixonprice._bounds   = [-10, 10]
 #ellipse._bounds      =  [-2, 2]
 #griewank._bounds     = [-600, 600]
@@ -367,8 +367,8 @@ if __name__ == "__main__":  # standalone test --
     import sys
     import json
 
-    dims = [2,4] #[2,4,6,8] #dimensions
-    nstep = 200  #iterations
+    dims = [2,4,6] #[2,4,6,8] #dimensions
+    nstep = 100  #iterations
     seed = 1 
     init = 1
     rdmia.setDotPrecision(0.5) 
