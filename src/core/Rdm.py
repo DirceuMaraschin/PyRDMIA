@@ -38,8 +38,8 @@ class Rdm(object):
         return self._upper
 
     def __checkValue(self,other):
-        if(type(other) is not RdmThread):
-            other = RdmThread(other,None)
+        if(type(other) is not Rdm):
+            other = Rdm(other,None)
         return other
 
     #def isEmpty(self):
@@ -111,7 +111,7 @@ class Rdm(object):
             v+=1
         for i in range(len(rdmOperation)):
             rdmOperation[i].join()
-        return RdmThread(min(values),max(values))
+        return Rdm(min(values),max(values))
 
     def __sub__(self,other):
         other = self.__checkValue(other)
@@ -124,7 +124,7 @@ class Rdm(object):
             v+=1
         for i in range(len(rdmOperation)):
             rdmOperation[i].join()
-        return RdmThread(min(values),max(values))
+        return Rdm(min(values),max(values))
 
     def __mul__(self,other):
         other = self.__checkValue(other)
@@ -137,7 +137,7 @@ class Rdm(object):
             v+=1
         for i in range(len(rdmOperation)):
             rdmOperation[i].join()
-        return RdmThread(min(values),max(values))
+        return Rdm(min(values),max(values))
 
     def __div__(self,other):
         other = self.__checkValue(other)
@@ -150,7 +150,7 @@ class Rdm(object):
             v+=1
         for i in range(len(rdmOperation)):
             rdmOperation[i].join()
-        return RdmThread(min(values),max(values))
+        return Rdm(min(values),max(values))
 
     #default operations given that possibly an initial number is not an RDM number
     def __radd__(self,other):
@@ -164,7 +164,7 @@ class Rdm(object):
             v+=1
         for i in range(len(rdmOperation)):
             rdmOperation[i].join()
-        return RdmThread(min(values),max(values))
+        return Rdm(min(values),max(values))
 
     def __rsub__(self,other):
         other = self.__checkValue(other)
@@ -177,7 +177,7 @@ class Rdm(object):
             v+=1
         for i in range(len(rdmOperation)):
             rdmOperation[i].join()
-        return RdmThread(min(values),max(values))
+        return Rdm(min(values),max(values))
 
     def __rmul__(self,other):
         other = self.__checkValue(other)
@@ -190,7 +190,7 @@ class Rdm(object):
             v+=1
         for i in range(len(rdmOperation)):
             rdmOperation[i].join()
-        return RdmThread(min(values),max(values))
+        return Rdm(min(values),max(values))
 
     def __rdiv__(self,other):
         other = self.__checkValue(other)
@@ -203,13 +203,13 @@ class Rdm(object):
             v+=1
         for i in range(len(rdmOperation)):
             rdmOperation[i].join()
-        return RdmThread(min(values),max(values))
+        return Rdm(min(values),max(values))
 
     #control
     '''
     def __checkValue(self,other):
-        if(type(other) is not RdmThread):
-            other = RdmThread(other)
+        if(type(other) is not Rdm):
+            other = Rdm(other)
         self.__validateDefinedValue(other)
         return other
 
@@ -230,21 +230,21 @@ class Rdm(object):
             v+=1
         for i in range(len(rdmOperation)):
             rdmOperation[i].join()
-        return RdmThread(min(values),max(values))
+        return Rdm(min(values),max(values))
 
     def __or__(self, other):
         other = self.__checkValue(other)
-        return RdmThread(max(self.lower(),other.lower()),min(self.upper(),other.upper()))
+        return Rdm(max(self.lower(),other.lower()),min(self.upper(),other.upper()))
 
     def __and__(self,other):
         other = self.__checkValue(other)
-        return RdmThread(min(self.lower(),other.lower()),max(self.upper(),other.upper()))
+        return Rdm(min(self.lower(),other.lower()),max(self.upper(),other.upper()))
 
     def __invert__(self):
-        return RdmThread(self.upper(),self.lower())
+        return Rdm(self.upper(),self.lower())
 
     def __neg__(self):
-        return RdmThread(-self.upper(),-self.lower())
+        return Rdm(-self.upper(),-self.lower())
 
     def __eq__(self,other):
         other = self.__checkValue(other)
@@ -254,7 +254,7 @@ class Rdm(object):
             return False
 
     def __contains__(self,other):
-        if(type(other) is not RdmThread):
+        if(type(other) is not Rdm):
             if(self.lower() <= other and self.upper() >= other):
                 return True
             else:
