@@ -242,6 +242,32 @@ class SimpleArray(object):
 	def copy(self):
 		return Rdmia.array(copy.deepcopy(self.data))
 
+	def _delete(self,mat, ind, axis=0):
+		if not isinstance(mat, SimpleArray) and isiterable(mat):		
+			mat = array(mat)
+		newShape = list(mat.shape)[:]
+		newShape[axis] -= len(ind)
+		result = Rdmia.zeros(newShape)
+		def CopyWithDelete(currentAxis, ind, axis, matdata, resultData):
+			if currentAxis < len(mat.shape)-1:
+				count = 0
+				for i, data in enumerate(matdata):
+					if currentAxis == axis and i in ind:
+						continue
+					CopyWithDelete(currentAxis + 1, ind, axis, data, resultData[count])
+					count += 1
+			else:
+				count = 0
+				for i, val in enumerate(matdata):
+					if currentAxis == axis and i in ind:
+						continue
+					resultData[count] = val
+					count += 1
+
+		CopyWithDelete(0, ind, axis, mat.data, result.data)
+		return result
+
+
 	def _adjugate(self,mat):
 		if not isinstance(mat, SimpleArray) and Rdmia.isiterable(mat):		
 			mat = Rdmia.array(mat)
@@ -251,24 +277,24 @@ class SimpleArray(object):
 		result = Rdmia.zeros(mat.shape)
 		for i in range(mat.shape[0]):
 			for j in range(mat.shape[1]):
-				submat = delete(mat, [j], 0)
-				submat2 = delete(submat, [i], 1)
-				result.data[i][j] = ((-1)**(i+j))*det(submat2)
+				submat = self._delete(mat, [j], 0)
+				submat2 = self._delete(submat, [i], 1)
+				result.data[i][j] = ((-1)**(i+j))*self._det(submat2)
 		return result
 
 	#Implementar internamente quando uma matriz eh mto grande
 	@property
-	def inverse(self):
+	def I(self):
 		eps=1e-8
 		#Find inverse based on find the adjugate matrix
 		#which is inefficient for large matrices.
-		if not isinstance(self.data, SimpleArray) and Rdmia.isiterable(self.data):		
-			mat = Rdmia.array(self.data)
-		if len(self.data.shape) != 2:
+		if not isinstance(self, SimpleArray) and Rdmia.isiterable(self):		
+			mat = Rdmia.array(self)
+		if len(self.shape) != 2:
 			raise NotImplementedError("Only implemented for 2D matricies")
-		if self.data.shape[0] != self.data.shape[1]:
+		if self.shape[0] != self.shape[1]:
 			raise ValueError("Matrix must be square")
-		mdet = self.data.det
+		mdet = self.D
 		if (type(mdet) is Rdm):
 			mdet = qm.midpoint(mdet)
 		if abs(mdet) < eps:
@@ -276,14 +302,17 @@ class SimpleArray(object):
 		return self._adjugate(self.data) * (1.0 / float(mdet))
 
 	@property
-	def det(self):
-		if not isinstance(self.data, SimpleArray) and Rdmia.isiterable(self.data):		
-			self.data = Rdmia.array(self.data)
-		if len(self.data.shape) != 2:
+	def D(self):
+		return self._det(self)
+	
+	def _det(self,arr):
+		if not isinstance(arr.data, SimpleArray) and Rdmia.isiterable(arr.data):		
+			arr.data = Rdmia.array(arr.data)
+		if len(arr.data.shape) != 2:
 			raise NotImplementedError("Only implemented for 2D matricies")
-		if self.data.shape[0] != self.data.shape[1]:
+		if arr.data.shape[0] != arr.data.shape[1]:
 			raise ValueError("Matrix must be square")
-		n = self.data.shape[0]
+		n = arr.data.shape[0]
 		
 		#Leibniz formula for the determinant
 		total2 = 0.0
@@ -312,7 +341,7 @@ def inv_by_gauss_jordan(mat, eps=1e-8):
 		raise NotImplementedError("Only implemented for 2D matricies")
 	if mat.shape[0] != mat.shape[1]:
 		raise ValueError("Matrix must be square")
-	mdet = det(mat)
+	mdet = self._det(mat)
 
 	if(type(mdet) is Rdm):
 		mdet = qm.midpoint(mdet)

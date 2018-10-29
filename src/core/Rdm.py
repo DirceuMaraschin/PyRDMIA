@@ -253,6 +253,9 @@ class Rdm(object):
         else:
             return False
 
+    def __iter__(self):
+        raise TypeError
+
     def __contains__(self,other):
         if(type(other) is not Rdm):
             if(self.lower() <= other and self.upper() >= other):

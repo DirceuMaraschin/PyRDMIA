@@ -1,3 +1,5 @@
+from pyrdmia import Rdmia
+
 class RLS(object):
 	
 	def __init__(self):
@@ -5,16 +7,20 @@ class RLS(object):
 		__coefDetermination = 0.0
 		__rmse = 0.0
 
+
 	def fit(self,x,y):
 		print (x)
 		print (y)
 
 		print ("X^T X ",x.T.dot(x))
 
-		x_1 = (inv_by_adjugate(midPointMatrix(x.T.dot(x))))
+		#x_1 = (inv_by_adjugate(midPointMatrix(x.T.dot(x))))
+		x_1 = x.T.dot(x)
+		x_1 = x_1.I
 		print (x_1)
 
-		y_2 = midPointMatrix(x.T.dot(y))
+		#y_2 = midPointMatrix(x.T.dot(y))
+		y_2 = x.T.dot(y)
 		print (y_2)
 		z = (x_1).dot(y_2)
 		print (z)
@@ -36,7 +42,7 @@ class RLS(object):
 		print ("MEDIA X: ",x_mean)
 		print ("MEDIA Y: ",y_mean)
 
-		beta_0 = array([[y_mean - (z.data[0][0]*(x_mean))]])
+		beta_0 = Rdmia.array([[y_mean - (z.data[0][0]*(x_mean))]])
 		print ("BETA_0 ",beta_0)
 
 		print ("VALOR ORIGINAL",z)
@@ -57,12 +63,12 @@ class RLS(object):
 
 def billard(x):
 	data = []
-	l = rdmia.number(0)
-	u = rdmia.number(0)
+	l = Rdmia.number(0)
+	u = Rdmia.number(0)
 	for val in range(len(x.data)):
 		l = 29.664 + 0.330*x.data[val][1].lower()
 		u = 45.070 + 0.308*x.data[val][1].upper()
-		data.append(rdmia.number(l,u))
+		data.append(Rdmia.number(l,u))
 	return data
 
 def coefDetermination(y,pred,y_mean):
@@ -120,9 +126,6 @@ def cov(x,y):
 	return (sum_xy_l-(sum_x_l*sum_y_l)/len(x))/len(x),(sum_xy_u-(sum_x_u*sum_y_u)/len(x))/len(x)
 	
 if __name__=="__main__":
-	TestRunningAverage()
-	TestArray()
-	print ("All tests passed")
 
 	Rdmia.setDotPrecision(2)
 
@@ -138,7 +141,7 @@ if __name__=="__main__":
 	[Rdmia.number(1),Rdmia.number(138,180)],
 	[Rdmia.number(1),Rdmia.number(110,150)]])
 
-	y = array([[Rdmia.number(44,68)],
+	y = Rdmia.array([[Rdmia.number(44,68)],
 	[Rdmia.number(60,72)],
 	[Rdmia.number(56,90)],
 	[Rdmia.number(70,112)],
@@ -150,18 +153,17 @@ if __name__=="__main__":
 	[Rdmia.number(86,96)],
 	[Rdmia.number(86,100)]
 	])
+
+	regressor = RLS()
+	regressor.fit(x,y)
 	
 
-	#x = array([[1,Rdmia.number(11,12)],[1,Rdmia.number(5)],[1,Rdmia.number(3)],[1,Rdmia.number(9)]])
-	#y = array([[25],[13],[8],[20]])
+	#x = Rdmia.array([[1,Rdmia.number(11,12)],[1,Rdmia.number(5)],[1,Rdmia.number(3)],[1,Rdmia.number(9)]])
+	#y = Rdmia.array([[25],[13],[8],[20]])
 
 
 
-
-
-	#Alpha
-	
-
+	'''
 	#FINAL
 	billard_r = billard(x)
 	print ("Value(INT) - PREDICT - Erro - R. Billard")
@@ -191,5 +193,5 @@ if __name__=="__main__":
 	aux_2b_l,aux_2b_u = var_array(y.data,y_mean)
 
 	print ("Covariancia (lower,upper)",(cov_b_l/(aux_b_l*aux_2b_l)),(cov_b_u/(aux_b_u*aux_2b_u)))
-	print ("Resultado Teste: ",z.data[0][0] + z.data[1][0]*rdmia.number(118,126))
-
+	print ("Resultado Teste: ",z.data[0][0] + z.data[1][0]*Rdmia.number(118,126))
+	'''
