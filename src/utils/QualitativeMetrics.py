@@ -2,8 +2,6 @@ from pyrdmia.core import Rdmia as rdmia
 from pyrdmia.core import Rdm
 import numpy as np
 
-#Calculates Relative Error
-
 __all__ = ["QualitativeMetrics"]
 
 class QualitativeMetrics(object):

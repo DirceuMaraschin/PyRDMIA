@@ -2,19 +2,20 @@
 from pyrdmia.core import Rdmia as rdmia
 from pyrdmia.core import Rdm
 from .QualitativeMetrics import QualitativeMetrics as qm
-
-
 import math
 
 __all__ = ["RMath"]
 
 class RMath(object):
 
+    E = rdmia.number(math.e)
+    PI = rdmia.number(math.pi)
+
     #convert degrees to radians
     @staticmethod
     def degToRad(value):
         #rad = (value/180)*math.pi
-        rad = 0
+        rad = 0.0
         if (type(value) is Rdm):
             rad = math.radians(qm.midpoint(value))
         else:
@@ -28,7 +29,7 @@ class RMath(object):
     #sine function by sin² + cos² = 1
     @staticmethod
     def sin(value):
-        r = 0
+        r = 0.0
         r = RMath.sqrt(1 - (RMath.cos(value))**2)
         return r
 
@@ -36,11 +37,11 @@ class RMath(object):
     @staticmethod
     def cos(value):
         n = RMath.degToRad(value)
-        c = 0
-        r = 1
+        c = 0.0
+        r = 1.0
         while(c<50):
-            c += 1
-            r += (((-1)**c)*(n**(2 * c)))/(math.factorial(2 * c))
+            c += 1.0
+            r += (((-1.0)**c)*(n**(2.0 * c)))/(math.factorial(2.0 * c))
         return r
 
     #tangent
@@ -64,17 +65,17 @@ class RMath(object):
     #absolute value 
     @staticmethod
     def abs(x):
-        return RMath.sqrt(x**2)
+        return RMath.sqrt(x**2.0)
 
     #secant
     @staticmethod
     def sec(value):
-        return 1/RMath.cos(value)
+        return 1.0/RMath.cos(value)
 
     #cosecant
     @staticmethod
     def csc(value):
-        return 1/RMath.sin(value)
+        return 1.0/RMath.sin(value)
 
     #cotangent
     @staticmethod
@@ -115,7 +116,7 @@ class RMath(object):
     @staticmethod
     def ln(x):
         n=1000.0
-        return  n*((x**(1/n))-1)
+        return  n*((x**(1/n))-1.0)
 
 
 '''
