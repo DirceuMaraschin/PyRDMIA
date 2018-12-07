@@ -33,8 +33,13 @@ class QualitativeMetrics(object):
     def diameter(xInt):
         return xInt.upper() - xInt.lower()
 
-    #Calculates midle point from the interval
+    #Calculates midpoint from the interval
     @staticmethod
     def midpoint(xInt):
         return (xInt.lower() + xInt.upper())/2.0
+
+    #Calculates radius from the interval
+    @staticmethod
+    def radius(xInt):
+        return (xInt.upper() - xInt.lower())/2.0
 
