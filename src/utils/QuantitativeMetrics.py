@@ -1,6 +1,6 @@
-from pyrdmia.core import Rdmia as rdmia
-from pyrdmia.core import Rdm
-from pyrdmia.utils import RMath as ria
+from ..core import Rdmia as rdmia
+from ..core import Rdm
+from ..utils import RMath as ria
 import numpy as np
 
 __all__ = ["QuantitativeMetrics"]

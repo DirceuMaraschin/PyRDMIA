@@ -48,7 +48,7 @@ if __name__ == "__main__":
             "pyrdmia.core",
             "pyrdmia.utils",
             "pyrdmia.support",
-            "pyrdmia.records"
+            "pyrdmia.regression"
         ],
         package_dir={
             "pyrdmia" : "src"

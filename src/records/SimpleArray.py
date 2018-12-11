@@ -2,7 +2,7 @@
 #Released under the CC0 license
 
 
-from pyrdmia.core import Rdm
-from pyrdmia.utils import QualitativeMetrics as qm
-from pyrdmia.core import Rdmia
+from ..core import Rdm
+from ..utils import QualitativeMetrics as qm
+from ..core import Rdmia
 
