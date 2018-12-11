@@ -1,4 +1,3 @@
-
 from ..core import Rdmia as rdmia
 from ..core import Rdm
 from .QualitativeMetrics import QualitativeMetrics as qm
@@ -14,55 +13,77 @@ class RMath(object):
     #convert degrees to radians
     @staticmethod
     def degToRad(value):
-        rad = (value/180)*math.pi
-        '''
+        #rad = (value/180)*math.pi
         rad = 0.0
         if (type(value) is Rdm.Rdm):
             rad = math.radians(qm.midpoint(value))
         else:
             rad = math.radians(value)
+        
+        return rad
+
+    #factorial
+    @staticmethod
+    def factorial(value):
         '''
-        return rdmia.number(rad)
+        f = lambda t : t**(value-1.0)*math.e**(-t)
+        return RMath.iSimpson(f,5000.0,0.0,99999999999.0)
+        '''
+        return rdmia.number(math.factorial(value))
+        
+    #natural logarithm
+    @staticmethod
+    def log(value):
+        return rdmia.number(math.log(value))
+
+    #exponential
+    @staticmethod
+    def exp(value):
+        return rdmia.number(self.E**value)
+
+    #square root
+    @staticmethod
+    def sqrt(value):
+        if(type(value) is Rdm.Rdm):
+            return value**(1.0/2.0)
+        else:
+            return rdmia.number(value**(1.0/2.0))
+
+    #absolute value 
+    @staticmethod
+    def abs(value):
+        return RMath.sqrt(value**2.0)
+
     
     #sine function by sin² + cos² = 1
     @staticmethod
     def sin(value):
+        return rdmia.number(math.sin(RMath.degToRad(value)))
+        '''
         r = 0.0
         r = RMath.sqrt(1.0 - (RMath.cos(value))**2.0)
-        return r
+        '''
+        '''
+        for k in range(0,10,1):
+            r=((-1)**k)*(value**(1+2*k))/(math.factorial(1+2*k))
+        '''
 
     #cosine
     @staticmethod
     def cos(value):
+        return rdmia.number(math.cos(RMath.degToRad(value)))
+        '''
         n = RMath.degToRad(value)
         r = 1.0
-        for c in range(50):
+        for c in range(500):
             r += (((-1.0)**c)*(n**(2.0 * c)))/(math.factorial(2.0 * c))
         return r
+        '''
 
     #tangent
     @staticmethod
     def tan(value):
         return RMath.sin(value)/RMath.cos(value)
-
-    #exponential
-    @staticmethod
-    def exp(x):
-        return math.e**x
-
-    #square root
-    @staticmethod
-    def sqrt(x):
-        if(type(x) is Rdm.Rdm):
-            print (x)
-            return x**(1.0/2.0)
-        else:
-            return rdmia.number(x**(1.0/2.0))
-
-    #absolute value 
-    @staticmethod
-    def abs(x):
-        return RMath.sqrt(x**2.0)
 
     #secant
     @staticmethod
@@ -79,68 +100,65 @@ class RMath(object):
     def cot(value):
         return RMath.cos(value)/RMath.sin(value)
 
-    #hyperbolic sine xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    #hyperbolic sine
     @staticmethod
     def sinh(value):
-        return (RMath.exp(value)/2.0)-(RMath.exp(-(value))/2.0)
+        return rdmia.number(math.sinh(RMath.degToRad(value)))
+        #return (RMath.exp(value)/2.0)-(RMath.exp(-(value))/2.0)
 
-    #hyperbolic cosine xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    #hyperbolic cosine
     @staticmethod
     def cosh(value):
-        return (RMath.exp(-(value))/2.0)+(RMath.exp(value)/2.0)
+        return rdmia.number(math.cosh(RMath.degToRad(value)))
+        #return (RMath.exp(-(value))/2.0)+(RMath.exp(value)/2.0)
 
-    #hyperbolic tangent xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    #hyperbolic tangent
     @staticmethod
     def tanh(value):
-        return RMath.sinh(value)/RMath.cosh(value)
+        return rdmia.number(math.tanh(RMath.degToRad(value)))
+        #return RMath.sinh(value)/RMath.cosh(value)
         
-    #hyperbolic secant xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    #hyperbolic secant
     @staticmethod
     def sech(value):
         return 1.0/RMath.cosh(value)
 
-    #hyperbolic cosecant xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    #hyperbolic cosecant
     @staticmethod
     def csch(value):
         return 1.0/RMath.sinh(value)
 
-    #hyperbolic cotangent xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    #hyperbolic cotangent
     @staticmethod
     def coth(value):
         return RMath.cosh(value)/RMath.sinh(value)
     
-    #natural logarithm
-    @staticmethod
-    def ln(x):
-        n=1000.0
-        return  n*((x**(1/n))-1.0)
-
-
-'''
     #inverse sine
-    def asin(x, rnd=0):
-        pass
-
-    #inverse hyperbolic sine
-    def asinh(x, rnd=0):
-        pass 
+    @staticmethod
+    def asin(value):
+        return rdmia.number(math.asin(RMath.degToRad(value)))
 
     #inverse cosine
-    def acos(x, rnd=0):
-        pass
-
-    #inverse hyperbolic cosine
-    def acosh(x, rnd=0):
-        pass
+    @staticmethod
+    def acos(value):
+        return rdmia.number(math.acos(RMath.degToRad(value)))
 
     #inverse tangent
-    def atan(x, rnd=0):
-        pass
+    @staticmethod
+    def atan(value):
+        return rdmia.number(math.atan(RMath.degToRad(value)))
+
+    #inverse hyperbolic sine
+    @staticmethod
+    def asinh(value):
+        return rdmia.number(math.asinh(RMath.degToRad(value)))
+
+    #inverse hyperbolic cosine
+    @staticmethod
+    def acosh(value):
+        return rdmia.number(math.acosh(RMath.degToRad(value)))
 
     #inverse hyperbolic tangent
-    def atanh(x, rnd=0):
-        pass
-
-    def log(x, rnd=0, base=2):
-        pass
-'''
+    @staticmethod
+    def atanh(value):
+        return rdmia.number(math.atanh(RMath.degToRad(value)))
