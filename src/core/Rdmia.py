@@ -12,32 +12,29 @@ from .Rdm import *
 from ..utils import QualitativeMetrics as qm
 import itertools, copy
 
-
 _precision = 0.5
-
 
 def precision():
 	return _precision
 
-
 def setDotPrecision(val):
-	_precision = val#10**(-val)
-	print (_precision)
-
+	_precision = val #10**(-val)
+	print ("defined precision: %s" % _precision)
 
 def one():
 	return Rdm(1.0,None,_precision)
 
-
 def zero():
 	return Rdm(0.0,None,_precision)
-
 
 def number(x,y=None):
 	if y is None:
 		return Rdm(x,None,_precision)
 	else:
-		return Rdm(x,y,_precision)
+		if x>y:
+			raise TypeIntervalError("Improper interval defined!")
+		else:
+			return Rdm(x,y,_precision)
 
 
 def isiterable(data):

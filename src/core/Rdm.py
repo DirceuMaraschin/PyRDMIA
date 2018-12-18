@@ -221,6 +221,7 @@ class Rdm(object):
     '''
     
     #complementary and unary operations 
+    #power operation
     def __pow__(self,other):
         other = self.__checkValue(other)
         values = []
@@ -231,23 +232,40 @@ class Rdm(object):
                 self.__operation__(alpha_self,other,"POW",None,values)
         return Rdm(min(values),max(values))
 
+
+    #inion operator
     def __or__(self, other):
         other = self.__checkValue(other)
-        return Rdm(max(self.lower(),other.lower()),min(self.upper(),other.upper()))
-
+        return Rdm(min(self.lower(),other.lower()),max(self.upper(),other.upper()))
+    
+    #intersection operator
     def __and__(self,other):
         other = self.__checkValue(other)
-        return Rdm(min(self.lower(),other.lower()),max(self.upper(),other.upper()))
+        if (max(self.lower(),other.lower())) < (min(self.upper(),other.upper())):
+            raise UndefinedValueIntervalError("Invalid operation! Returns an improper interval.")
+        else:
+            return Rdm(min(self.upper(),other.upper()),max(self.lower(),other.lower()))
 
+    #interval inversion
     def __invert__(self):
         return Rdm(self.upper(),self.lower())
 
+    #interval deny
     def __neg__(self):
         return Rdm(-self.upper(),-self.lower())
 
+    #equality test
     def __eq__(self,other):
         other = self.__checkValue(other)
         if((other.lower() == self.lower()) and (other.upper() == self.upper())):
+            return True
+        else:
+            return False
+    
+    #inequality test
+    def __neq__(self,other):
+        other = self.__checkValue(other)
+        if((other.lower() != self.lower()) and (other.upper() != self.upper())):
             return True
         else:
             return False
@@ -255,6 +273,7 @@ class Rdm(object):
     def __iter__(self):
         raise TypeError
 
+    #contains operator
     def __contains__(self,other):
         if(type(other) is not Rdm):
             if(self.lower() <= other and self.upper() >= other):
@@ -267,6 +286,7 @@ class Rdm(object):
             else:
                 return False
 
+    #comparison operator "less than"
     def __lt__(self,other):
         other = self.__checkValue(other)
         if((self.lower() < other.lower()) and (self.upper() < other.upper())):
@@ -274,6 +294,7 @@ class Rdm(object):
         else:
             return False
 
+    #comparison operator "less or equal"
     def __le__(self,other):
         other = self.__checkValue(other)
         if((self.lower() <= other.lower()) and (self.upper() <= other.upper())):
@@ -281,6 +302,7 @@ class Rdm(object):
         else:
             return False
 
+    #comparison operator "greater than"
     def __gt__(self,other):
         other = self.__checkValue(other)
         if((self.lower() > other.lower()) and (self.upper() > other.upper())):
@@ -288,6 +310,7 @@ class Rdm(object):
         else:
             return False
 
+    #comparison operator "greater or equal"
     def __ge__(self,other):
         other = self.__checkValue(other)
         if((self.lower() >= other.lower()) and (self.upper() >= other.upper())):
