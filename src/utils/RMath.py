@@ -6,9 +6,22 @@ import math
 
 class RMath(object):
 
+    '''
     def __init__(self):
         self.E = rdmia.number(math.e)
         self.PI = rdmia.number(math.pi)
+    '''
+    
+    @staticmethod
+    def exp(value):
+        E = rdmia.number(math.e)**value
+        return E
+    
+    @staticmethod
+    def pi():
+        PI = rdmia.number(math.pi)
+        return PI
+
 
     #convert degrees to radians
     @staticmethod
@@ -36,10 +49,12 @@ class RMath(object):
     def log(value):
         return rdmia.number(math.log(value))
 
+    '''
     #exponential
     @staticmethod
     def exp(value):
         return rdmia.number(self.E**value)
+    '''
 
     #square root
     @staticmethod

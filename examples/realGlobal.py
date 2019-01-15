@@ -48,40 +48,19 @@ nlopt/test/... runs and plots BOBYQA PRAXIS SBPLX ... on these ndtestfuncs
 Nd-testfuncs-python.md
 F = Funcmon(func): wrap func() to monitor and plot F.fmem F.xmem F.cost
 """
-
-#...............................................................................
-from __future__ import division
+    # zillions of papers and methods for derivative-free optimization alone
+import math
 import numpy as np
 from numpy import abs, cos, exp, mean, pi, prod, sin, sqrt, sum
-from pyrdmia import Rdmia as rdmia
-from pyrdmia.utils import RMath as ria
-from pyrdmia.utils import QualitativeMetrics as qm
 import time
-import math
-
-#try:
-#    from opt.testfuncs.powellsincos import Powellsincos
-#except ImportError:
-#    Powellsincos = None
-#try:
-#    from opt.testfuncs.randomquad import randomquad
-#    from opt.testfuncs.logsumexp import logsumexp
-#except ImportError:
-#    randomquad = logsumexp = None
-
-
-#__version__ = "2015-03-06 mar  denis-bz-py t-online de"  # + randomquad logsumexp
-
 
 #...............................................................................
-def ackley( x, a=20, b=0.2, c=2*ria.pi()):
-    #x = np.asarray_chkfinite(x)  # ValueError if any NaN or Inf
-    #print (x)
+def ackley( x, a=20, b=0.2, c=2*math.pi ):
+    x = np.asarray_chkfinite(x)  # ValueError if any NaN or Inf
     n = len(x)
-    s1 = sum( [v**2.0 for v in x])
-    s2 = sum( [ria.cos( c * v ) for v in x])
-    
-    return -a*ria.exp( -b*( s1 / n )**(1.0/2.0)) - ria.exp( s2 / n ) + a + ria.exp(1)
+    s1 = sum( x**2 )
+    s2 = sum( cos( c * x ))
+    return -a*exp( -b*sqrt( s1 / n )) - exp( s2 / n ) + a + exp(1)
 
 #...............................................................................
 def dixonprice( x ):  # dp.m
@@ -93,52 +72,38 @@ def dixonprice( x ):  # dp.m
 
 #...............................................................................
 def griewank( x, fr=4000 ):
-    #x = np.asarray_chkfinite(x)
+    x = np.asarray_chkfinite(x)
     n = len(x)
     j = np.arange( 1., n+1 )
-    s = sum( [v**2 for v in x] )
-    v = []
-    for i in range(len(x)):
-        v.append(x[i]/ria.sqrt(j[i])) #ria.sqrt
-    p = prod(([ ria.cos( xi ) for xi in v ]) ) 
+    s = sum( x**2 )
+    p = prod( cos( x / sqrt(j) ))
     return s/fr - p + 1
 
 #...............................................................................
 def levy( x ):
     x = np.asarray_chkfinite(x)
     n = len(x)
-    z = 1 + (x - 1) / 4.0
-    t1 = ria.sin( ria.pi() * z[0] )**2
-    t2_1 = [(v - 1)**2 for v in x]
-    t2_1 = t2_1[:-1]
-    t2_2 = [(1 + 10 * ria.sin( ria.pi() * v + 1 )**2 ) for v in x]
-    t2_2 = t2_2[:-1]
-    t2_3 = [t2_1[i]  * t2_2[i] for i in range(len(t2_2))]
-
-    t2 = sum(t2_3)
-    t3 = (z[-1] - 1)**2 * (1 + ria.sin( 2 * ria.pi() * z[-1] )**2 )
-    return t1 + t2 + t3      
+    z = 1 + (x - 1) / 4
+    return (sin( pi * z[0] )**2
+        + sum( (z[:-1] - 1)**2 * (1 + 10 * sin( pi * z[:-1] + 1 )**2 ))
+        +       (z[-1] - 1)**2 * (1 + sin( 2 * pi * z[-1] )**2 ))
 
 #...............................................................................
-michalewicz_m = .001  # orig 10: ^20 => underflow
+michalewicz_m = .5  # orig 10: ^20 => underflow
 
 def michalewicz( x ):  # mich.m
     x = np.asarray_chkfinite(x)
     n = len(x)
     j = np.arange( 1., n+1 )
-    t1 = [ria.sin(v) for v in x]
-    t2 = [ria.sin( j[i] * x[i]**2 / ria.pi() ) for i in range(len(x))]
-    t3 = [t1[i] * t2[i]**((2 * michalewicz_m)) for i in range(len(t1))]
-
-    return - sum(t3)
+    return - sum( sin(x) * sin( j * x**2 / pi ) ** (2 * michalewicz_m) )
 
 #...............................................................................
 def perm( x, b=.5 ):
     x = np.asarray_chkfinite(x)
     n = len(x)
     j = np.arange( 1., n+1 )
-    xbyj = [((ria.abs(x[i])) / j[i]) for i in range(len(x))]
-    return mean([ mean( (j**k + b) * (xbyj ** k - 1.0) ) **2.0   #add media aritmetica em rdm
+    xbyj = np.fabs(x) / j
+    return mean([ mean( (j**k + b) * (xbyj ** k - 1) ) **2
             for k in j/n ])
     # original overflows at n=100 --
     # return sum([ sum( (j**k + b) * ((x / j) ** k - 1) ) **2
@@ -152,7 +117,7 @@ def powell( x ):
     if n < n4:
         x = np.append( x, np.zeros( n4 - n ))
     x = x.reshape(( 4, -1 ))  # 4 rows: x[4i-3] [4i-2] [4i-1] [4i]
-    f = np.empty_like( x ) #"np.empty_like" - Return a new array with the same shape and type as a given array.
+    f = np.empty_like( x )
     f[0] = x[0] + 10 * x[1]
     f[1] = sqrt(5) * (x[2] - x[3])
     f[2] = (x[1] - 2 * x[2]) **2
@@ -173,7 +138,7 @@ def powersum( x, b=[8,18,44,114] ):  # power.m
 def rastrigin( x ):  # rast.m
     x = np.asarray_chkfinite(x)
     n = len(x)
-    return 10.0*n + sum([ v**2.0 - 10.0 * ria.cos( 2.0 * ria.pi() * v )  for v in x  ])
+    return 10*n + sum( x**2 - 10 * cos( 2 * pi * x ))
 
 #...............................................................................
 def rosenbrock( x ):  # rosen.m
@@ -182,13 +147,14 @@ def rosenbrock( x ):  # rosen.m
     x = np.asarray_chkfinite(x)
     x0 = x[:-1]
     x1 = x[1:]
-    return (sum( (1.0 - x0) **2.0 ) + rdmia.number(100.0) * sum( (x1 - x0**2.0) **2.0 ))
+    return (sum( (1 - x0) **2 )
+        + 100 * sum( (x1 - x0**2) **2 ))
 
 #...............................................................................
 def schwefel( x ):  # schw.m
     x = np.asarray_chkfinite(x)
     n = len(x)
-    return 418.9829*n - sum( [v * ria.sin( ria.sqrt( ria.abs( v ))) for v in x] )
+    return 418.9829*n - sum( x * sin( sqrt( abs( x ))))
 
 #...............................................................................
 def sphere( x ):
@@ -196,7 +162,7 @@ def sphere( x ):
     return sum( x**2 )
 
 #...............................................................................
-def sum2( x ): #SUM SQUARES FUNCTION
+def sum2( x ):
     x = np.asarray_chkfinite(x)
     n = len(x)
     j = np.arange( 1., n+1 )
@@ -220,7 +186,7 @@ def zakharov( x ):  # zakh.m
 
 def ellipse( x ):
     x = np.asarray_chkfinite(x)
-    return mean( (1.0 - x) **2.0 )  + 100.0 * mean( np.diff(x) **2.0 )
+    return mean( (1 - x) **2 )  + 100 * mean( np.diff(x) **2 )
 
 #...............................................................................
 def nesterov( x ):
@@ -228,15 +194,14 @@ def nesterov( x ):
     x = np.asarray_chkfinite(x)
     x0 = x[:-1]
     x1 = x[1:]
-    t1 = ria.abs( 1.0 - qm.midpoint(x[0]) ) / 4.0
-    t2 = sum( [ria.abs(qm.midpoint( x1[i] - 2.0*ria.abs(qm.midpoint(x0[i])) + 1.0 )) for i in range(len(x1)) ])
-    return t1 + t2
+    return abs( 1 - x[0] ) / 4 \
+        + sum( abs( x1 - 2*abs(x0) + 1 ))
 
 #...............................................................................
 def saddle( x ):
     x = np.asarray_chkfinite(x) - 1
     return np.mean( np.diff( x **2 )) \
-        + .5 * np.mean( x **4 ) #add média em RDM
+        + .5 * np.mean( x **4 )
 
 
 #-------------------------------------------------------------------------------
@@ -245,10 +210,10 @@ allfuncs = [
     #dixonprice,
     #ellipse,
     #griewank,
-    #levy,
+    levy,
     #michalewicz,  # min < 0
     #nesterov,
-    perm,
+    #perm,
     #powell,
     #powellsincos,  # many local mins
     #powersum,
@@ -261,7 +226,6 @@ allfuncs = [
     #trid,  # min < 0
     #zakharov,
     ]
-
 '''
 if Powellsincos is not None:  # try import
     _powellsincos = {}  # dim -> func
@@ -273,12 +237,11 @@ if Powellsincos is not None:  # try import
         return _powellsincos[n]( x )
 
     allfuncs.append( powellsincos )
+
+if randomquad is not None:  # try import
+    allfuncs.append( randomquad )
+    allfuncs.append( logsumexp )
 '''
-
-#if randomquad is not None:  # try import
-#    allfuncs.append( randomquad )
-#    allfuncs.append( logsumexp )
-
 allfuncs.sort( key = lambda f: f.__name__ )
 
 
@@ -288,22 +251,22 @@ name_to_func = { f.__name__ : f  for f in allfuncs }
 
     # bounds from Hedar, used for starting random_in_box too --
     # getbounds evals ["-dim", "dim"]
-#ackley._bounds       = [-15.0, 30.0] # before [-15, 30]
+#ackley._bounds       = [-15, 30]
 #dixonprice._bounds   = [-10, 10]
-#ellipse._bounds      = [-2, 2]
 #griewank._bounds     = [-600, 600]
-#levy._bounds         = [-10, 10]
+levy._bounds         = [-10, 10]
 #michalewicz._bounds  = [0, pi]
-perm._bounds         = ["-dim", "dim"]  # min at [1 2 .. n]
+#perm._bounds         = ["-dim", "dim"]  # min at [1 2 .. n]
 #powell._bounds       = [-4, 5]  # min at tile [3 -1 0 1]
 #powersum._bounds     = [0, "dim"]  # 4d min at [1 2 3 4]
 #rastrigin._bounds    = [-5.12, 5.12]
-#rosenbrock._bounds   = [-5, 10]  # MODIFICADO > ANTERIOR =  [-2.4, 2.4]    
-#schwefel._bounds     = [-500.0, 500.0]
+#rosenbrock._bounds   = [-2.4, 2.4]  # wikipedia
+#schwefel._bounds     = [-500, 500]
 #sphere._bounds       = [-5.12, 5.12]
 #sum2._bounds         = [-10, 10]
 #trid._bounds         = ["-dim**2", "dim**2"]  # fmin -50 6d, -200 10d
 #zakharov._bounds     = [-5, 10]
+#ellipse._bounds      =  [-2, 2]
 #logsumexp._bounds    = [-20, 20]  # ?
 #nesterov._bounds     = [-2, 2]
 #powellsincos._bounds = [ "-20*pi*dim", "20*pi*dim"]
@@ -349,69 +312,56 @@ def funcnames_minus( minus=_minus ):
     return " ".join([ f.__name__
             for f in allfuncs_minus( minus=minus )])
 
-def makeList(steps,dim):
-    result = []
-    r = []
-    for k in steps:
-        for i in range(dim):
-            r.append(rdmia.number(k))
-        result.append(r)
-        r = []
 
-    return result
-
-
-#-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 if __name__ == "__main__":  # standalone test --
     import sys
     import json
 
-    dims = [2,3] #dimensions
-    nstep = 50  #iterations
-    seed = 1 
+    dims = [8]  # , 100]
+    nstep = 300  # 11: 0 .1 .2 .. 1
+    seed = 1
     init = 1
-    rdmia.setDotPrecision(0.1) 
-    print ("PRECISION: ",rdmia.precision())
-    
     problems = {}
-        # to change these params in sh or ipython, run this.py  a=1  b=None  c=[3] ...
+
     for arg in sys.argv[1:]:
         exec( arg )
 
     np.set_printoptions( threshold=20, edgeitems=5, linewidth=120, suppress=True,
         formatter = dict( float = lambda x: "%.2g" % x ))  # float arrays %.2g
     np.random.seed(seed)
-
     
     #...........................................................................
     for dim in dims:
-
-        print ("\n# ndtestfuncs dim %d  along the diagonal low .. high corner --" % dim)
+        print ("# ndtestfuncs dim %d  along the diagonal low .. high corner --",dim)
+        # cmp matlab, anyone ?
+        
+        
         # cmp matlab, anyone ?
         print ("PROBLEM | DIM | MIN | LOW | HI | Y - YMIN")
         for step in range(init,nstep):
             print ("-Dims: #",dim,"  -STEP: #",step)
             for func in allfuncs:
                 lo, hi = getbounds( func, dim )
-                stepsAux = np.linspace( lo, hi, step )
-                steps = makeList(stepsAux,dim)
-                startTime = time.time()  
-                Y = np.array([ func(t) for t in steps ])
+                steps = np.linspace( lo, hi, step )
+
+                startTime = time.time()
+                Y = np.array([ func( t * np.ones(dim) ) for t in steps ])
                 endTime = time.time()
                 jmin = Y.argmin()
                 Ymin = Y[jmin]
+                
                 if(step==init and dim == dims[0]):
                     problems[func.__name__] = {"dim":dim,"Ymin":Ymin,"cpu":(endTime - startTime),"Low":lo,"High":hi,"N-Steps":step}
                 else:
                     if(problems[func.__name__]["Ymin"] > Ymin):
                         problems[func.__name__] = {"dim":dim,"Ymin":Ymin,"cpu":(endTime - startTime),"Low":lo,"High":hi,"N-Steps":step}
-                #print ("problem dim min lo hi Y-min ",
-                #        func.__name__, dim, Ymin, steps[jmin], lo, hi, Y - Ymin )
-                #print (func.__name__,dim,Ymin,lo,hi,Y-Ymin)
-                #print (problems)
+        
+        
+    file = open("real-levy-04.txt","w") 
+    file.write(json.dumps(problems))
+    file.close()
+        #print ()
 
-    with open("02-perm.txt", 'w') as f:
-        for key, value in problems.items():
-            f.write('%s:%s\n' % (key, value))
-    f.close()
+
+            

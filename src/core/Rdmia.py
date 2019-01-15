@@ -12,13 +12,13 @@ from .Rdm import *
 from ..utils import QualitativeMetrics as qm
 import itertools, copy
 
-_precision = 0.5
+_precision = 0.1
 
 def precision():
 	return _precision
 
 def setDotPrecision(val):
-	_precision = val #10**(-val)
+	_precision = val
 	print ("defined precision: %s" % _precision)
 
 def one():

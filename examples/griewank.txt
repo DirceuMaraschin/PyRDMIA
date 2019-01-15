@@ -1,0 +1,5 @@
+griewank:{'dim': 1, 'Ymin': [0.0, 0.0], 'cpu': 0.14855408668518066, 'Low': -600, 'High': 600, 'N-Steps': 3}
+
+real    119m37.832s
+user    119m24.703s
+sys     0m3.359s

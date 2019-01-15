@@ -26,7 +26,7 @@ class Rdm(object):
     _alpha = 0.0 
     f = None
 
-    def __init__(self,x,y,precision=0.01):
+    def __init__(self,x,y,precision=0.1):
         self._alpha = precision
         self._lower = np.float64(x)
         self._upper = np.float64(x) if y is None  else np.float64(y)

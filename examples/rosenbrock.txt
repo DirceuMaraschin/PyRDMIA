@@ -1,0 +1,6 @@
+rosenbrock:{'dim': 1, 'Ymin': [0.0, 0.0], 'cpu': 0.00047779083251953125, 'Low': -5, 'High': 10, 'N-Steps': 1}
+
+
+real    10m4.029s
+user    9m56.094s
+sys     0m1.266s

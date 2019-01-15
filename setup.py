@@ -36,8 +36,8 @@ if __name__ == "__main__":
         version="0.1.0",
         description=_package_description[0],
         long_description="\n".join(_package_description[2:-1]),
-        author="Aline Brum Loreto, Alice Fonseca Finger, Lucas Mendes Tortelli, Dirceu Maraschin Jr.",
-        author_email="aline.loreto@gmail.com, aliceffinger@gmail.com,lmtortelli@inf.ufpel.edu.br,dirceu_maraschin@hotmail.com",
+        author="Lucas Mendes Tortelli, Dirceu Maraschin Jr.",
+        author_email="lmtortelli@inf.ufpel.edu.br,dirceu_maraschin@hotmail.com",
         license="GPL",
         platforms=[
             "Windows",
