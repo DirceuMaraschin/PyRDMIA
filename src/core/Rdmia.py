@@ -12,13 +12,13 @@ from .Rdm import *
 from ..utils import QualitativeMetrics as qm
 import itertools, copy
 
-_precision = 0.1
+_precision = 0.5
 
 def precision():
 	return _precision
 
 def setDotPrecision(val):
-	_precision = val
+	_precision = val #10**(-val)
 	print ("defined precision: %s" % _precision)
 
 def one():
@@ -44,6 +44,22 @@ def isiterable(data):
 		return False
 	return True
 
+def arrayAlpha(data,alpha):
+	arr = SimpleArray()
+	arr.shape = []
+
+	dataAux = []
+	if not isiterable(data):
+		raise ValueError("Input must be iterable")
+	for i in range(len(data)):
+		aux = []
+		for k in range(len(data[0])):
+			aux.append(data[i][k].getNumber(alpha))
+		dataAux.append(aux)	
+	arr._ValidateShape(dataAux, 0)
+	arr.data = dataAux
+	arr.shape = tuple(arr.shape)
+	return arr
 
 def array(data):
 	arr = SimpleArray()
@@ -55,6 +71,32 @@ def array(data):
 	arr.shape = tuple(arr.shape)
 	return arr
 
+def arrayMinMax(data):
+	arrLow = SimpleArray()
+	arrLow.shape = []
+	arrUp = SimpleArray()
+	arrUp.shape = []
+
+	lowers = []
+	uppers = []
+	if not isiterable(data):
+		raise ValueError("Input must be iterable")
+	for i in range(len(data)):
+		auxLow = []
+		auxUp = []
+		for k in range(len(data[0])):
+			auxLow.append(data[i][k].lower())
+			auxUp.append(data[i][k].upper())
+		lowers.append(auxLow)
+		uppers.append(auxUp)	
+	arrLow._ValidateShape(lowers, 0)
+	arrLow.data = lowers
+	arrLow.shape = tuple(arrLow.shape)
+
+	arrUp._ValidateShape(uppers, 0)
+	arrUp.data = uppers
+	arrUp.shape = tuple(arrUp.shape)
+	return arrLow,arrUp
 
 def zeros(shape):
 	arr = SimpleArray()
@@ -108,11 +150,12 @@ class SimpleArray(object):
 
 	@property
 	def midPointMatrix(self):
-		for i in range(self.data.shape[0]):
-			for k in range(self.data.shape[1]):
-				if(type(self.data.data[i][k]) is Rdm.Rdm):
-					self.data.data[i][k] = number(qm.midpoint(self.data.data[i][k]))
-		return self.data
+
+		for i in range(len(self.data)):
+			for k in range(len(self.data[0])):
+				if(type(self.data[i][k]) is Rdm):
+					self.data[i][k] = qm.midpoint(self.data[i][k])
+		return self
 
 	def __str__(self):
 		#print (self.data)
@@ -291,7 +334,7 @@ class SimpleArray(object):
 		if self.shape[0] != self.shape[1]:
 			raise ValueError("Matrix must be square")
 		mdet = self.D
-		if (type(mdet) is Rdm.Rdm):
+		if (type(mdet) is Rdm):
 			mdet = qm.midpoint(mdet)
 		if abs(mdet) < eps:
 			raise RuntimeError("Matrix is not invertible (its determinant is zero)")
@@ -315,7 +358,7 @@ class SimpleArray(object):
 		for perm in itertools.permutations(range(n)):
 			total1 = 1.0
 			for i, j in zip(range(n), perm):
-				total1 *= self.data.data[i][j]
+				total1 *= arr.data.data[i][j]
 			total2 += self._perm_parity(list(perm)) * total1
 		return total2
 		
@@ -328,70 +371,71 @@ class SimpleArray(object):
 				lst[i],lst[mn] = lst[mn],lst[i]
 		return parity	
 
-def inv_by_gauss_jordan(mat, eps=1e-8):
-#Find inverse based on gauss-jordan elimination.
+	@property
+	def inv(self):
+	#Find inverse based on gauss-jordan elimination.
+		eps=1e-8
+		if not isinstance(self.data, SimpleArray) and isiterable(self.data):		
+			self.data = array(self.data)
+		if len(self.shape) != 2:
+			raise NotImplementedError("Only  implemented for 2D matricies")
+		if self.shape[0] != self.shape[1]:
+			raise ValueError("Matrix must be square")
+		mdet = self._det(self)
 
-	if not isinstance(mat, SimpleArray) and isiterable(mat):		
-		mat = array(mat)
-	if len(mat.shape) != 2:
-		raise NotImplementedError("Only implemented for 2D matricies")
-	if mat.shape[0] != mat.shape[1]:
-		raise ValueError("Matrix must be square")
-	mdet = self._det(mat)
+		if(type(mdet) is Rdm):
+			mdet = qm.midpoint(mdet)
+		if abs(mdet) < eps:
+			raise RuntimeError("Matrix is not invertible (its determinant is zero)")
+		#Create aux matrix
+		n = self.shape[0]
+		auxmat = identity(n)
 
-	if(type(mdet) is Rdm.Rdm):
-		mdet = qm.midpoint(mdet)
-	if abs(mdet) < eps:
-		raise RuntimeError("Matrix is not invertible (its determinant is zero)")
-	#Create aux matrix
-	n = mat.shape[0]
-	auxmat = identity(n)
-
-	#Convert to echelon (triangular) form
-	mat = copy.deepcopy(mat)
-	for i in range(n):
-		#Find highest value in this column
-		maxv = 0.0
-		maxind = None
-		for r in range(i, n):
-			v = mat.data[r][i]
-			if(type(v) is Rdm.Rdm):
-				v = abs(qm.midpoint(v))
-			if maxind is None or abs(v) > maxv:
-				if(type(v) is Rdm.Rdm):
-					maxv = abs(qm.midpoint(v))
+		#Convert to echelon (triangular) form
+		self.data = copy.deepcopy(self.data)
+		for i in range(n):
+			#Find highest value in this column
+			maxv = 0.0
+			maxind = None
+			for r in range(i, n):
+				v = self.data.data[r][i]
+				if(type(v) is Rdm):
+					v = abs(qm.midpoint(v))
+				if maxind is None or abs(v) > maxv:
+					if(type(v) is Rdm):
+						maxv = abs(qm.midpoint(v))
+					else:
+						maxv = abs(v)
+					maxind = r
+			if maxind != i:
+				#Swap this to the current row, for numerical stability
+				self.data.data[i], self.data.data[maxind] = self.data.data[maxind], self.data.data[i]
+				auxmat.data[i], auxmat.data[maxind] = auxmat.data[maxind], auxmat.data[i]
+			activeRow = self.data.data[i]
+			activeAuxRow = auxmat.data[i]
+			for r in range(i+1, n):
+				scale = self.data.data[r][i] / self.data.data[i][i]
+				cursorRow = self.data.data[r]
+				cursorAuxRow = auxmat.data[r]
+				for c in range(n):
+					cursorRow[c] -= scale * activeRow[c]
+					cursorAuxRow[c] -= scale * activeAuxRow[c]
+		#Finish elimination
+		for i in range(n-1, -1, -1):
+			activeRow = self.data.data[i]
+			activeAuxRow = auxmat.data[i]
+			for r in range(i, -1, -1):
+				cursorRow = self.data.data[r]
+				cursorAuxRow = auxmat.data[r]
+				if r == i:
+					scaling = activeRow[i]
+					for c in range(n):
+						print(cursorRow[c],scaling)
+						cursorRow[c] /= scaling
+						cursorAuxRow[c] /= scaling
 				else:
-					maxv = abs(v)
-				maxind = r
-		if maxind != i:
-			#Swap this to the current row, for numerical stability
-			mat.data[i], mat.data[maxind] = mat.data[maxind], mat.data[i]
-			auxmat.data[i], auxmat.data[maxind] = auxmat.data[maxind], auxmat.data[i]
-		activeRow = mat.data[i]
-		activeAuxRow = auxmat.data[i]
-		for r in range(i+1, n):
-			scale = mat.data[r][i] / mat.data[i][i]
-			cursorRow = mat.data[r]
-			cursorAuxRow = auxmat.data[r]
-			for c in range(n):
-				cursorRow[c] -= scale * activeRow[c]
-				cursorAuxRow[c] -= scale * activeAuxRow[c]
-	#Finish elimination
-	for i in range(n-1, -1, -1):
-		activeRow = mat.data[i]
-		activeAuxRow = auxmat.data[i]
-		for r in range(i, -1, -1):
-			cursorRow = mat.data[r]
-			cursorAuxRow = auxmat.data[r]
-			if r == i:
-				scaling = activeRow[i]
-				for c in range(n):
-					print(cursorRow[c],scaling)
-					cursorRow[c] /= scaling
-					cursorAuxRow[c] /= scaling
-			else:
-				scaling = cursorRow[i]
-				for c in range(n):
-					cursorRow[c] -= activeRow[c] * scaling
-					cursorAuxRow[c] -= activeAuxRow[c] * scaling
-	return auxmat
+					scaling = cursorRow[i]
+					for c in range(n):
+						cursorRow[c] -= activeRow[c] * scaling
+						cursorAuxRow[c] -= activeAuxRow[c] * scaling
+		return self
