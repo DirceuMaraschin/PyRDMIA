@@ -21,8 +21,7 @@ class RMath(object):
     def pi():
         PI = rdmia.number(math.pi)
         return PI
-
-
+        
     #convert degrees to radians
     @staticmethod
     def degToRad(value):
@@ -32,29 +31,17 @@ class RMath(object):
             rad = math.radians(qm.midpoint(value))
         else:
             rad = math.radians(value)
-        
         return rad
 
     #factorial
     @staticmethod
     def factorial(value):
-        '''
-        f = lambda t : t**(value-1.0)*math.e**(-t)
-        return RMath.iSimpson(f,5000.0,0.0,99999999999.0)
-        '''
         return rdmia.number(math.factorial(value))
         
     #natural logarithm
     @staticmethod
     def log(value):
         return rdmia.number(math.log(value))
-
-    '''
-    #exponential
-    @staticmethod
-    def exp(value):
-        return rdmia.number(self.E**value)
-    '''
 
     #square root
     @staticmethod
@@ -73,107 +60,168 @@ class RMath(object):
     #sine function by sin² + cos² = 1
     @staticmethod
     def sin(value):
-        return rdmia.number(math.sin(RMath.degToRad(value)))
-        '''
-        r = 0.0
-        r = RMath.sqrt(1.0 - (RMath.cos(value))**2.0)
-        '''
-        '''
-        for k in range(0,10,1):
-            r=((-1)**k)*(value**(1+2*k))/(math.factorial(1+2*k))
-        '''
+        #return rdmia.number(math.sin(RMath.degToRad(value)))
+        if (type(value) is Rdm.Rdm):
+            lower = math.sin(value.lower())
+            upper = math.sin(value.upper())
+            return rdmia.number(lower,upper)
+        else:
+            return rdmia.number(math.sin(value))
 
     #cosine
     @staticmethod
     def cos(value):
-        return rdmia.number(math.cos(RMath.degToRad(value)))
-        '''
-        n = RMath.degToRad(value)
-        r = 1.0
-        for c in range(500):
-            r += (((-1.0)**c)*(n**(2.0 * c)))/(math.factorial(2.0 * c))
-        return r
-        '''
+        if (type(value) is Rdm.Rdm):
+            lower = math.cos(value.lower())
+            upper = math.cos(value.upper())
+            return rdmia.number(lower,upper)
+        else:
+            return rdmia.number(math.cos(value))
 
     #tangent
     @staticmethod
     def tan(value):
-        return RMath.sin(value)/RMath.cos(value)
+        if (type(value) is Rdm.Rdm):
+            lower = math.tan(value.lower())
+            upper = math.tan(value.upper())
+            return rdmia.number(lower,upper)
+        else:
+            return rdmia.number(math.tan(value))
 
     #secant
     @staticmethod
     def sec(value):
-        return 1.0/RMath.cos(value)
+        if (type(value) is Rdm.Rdm):
+            return 1.0/RMath.cos(value)
+        else:
+            return rdmia.number(math.sin(value))
 
     #cosecant
     @staticmethod
     def csc(value):
-        return 1.0/RMath.sin(value)
+        if (type(value) is Rdm.Rdm):
+            return 1.0/RMath.sin(value)
+        else:
+            return rdmia.number(1.0/math.sin(value))
 
     #cotangent
     @staticmethod
     def cot(value):
-        return RMath.cos(value)/RMath.sin(value)
+        if (type(value) is Rdm.Rdm):
+            return RMath.cos(value)/RMath.sin(value)
+        else:
+            return rdmia.number(math.cos(value)/math.sin(value))
 
     #hyperbolic sine
     @staticmethod
     def sinh(value):
-        return rdmia.number(math.sinh(RMath.degToRad(value)))
-        #return (RMath.exp(value)/2.0)-(RMath.exp(-(value))/2.0)
+        if (type(value) is Rdm.Rdm):
+            lower = math.sinh(value.lower())
+            upper = math.sinh(value.upper())
+            return rdmia.number(lower,upper)
+        else:
+            return rdmia.number(math.sinh(value))
 
     #hyperbolic cosine
     @staticmethod
     def cosh(value):
-        return rdmia.number(math.cosh(RMath.degToRad(value)))
-        #return (RMath.exp(-(value))/2.0)+(RMath.exp(value)/2.0)
+        if (type(value) is Rdm.Rdm):
+            lower = math.cosh(value.lower())
+            upper = math.cosh(value.upper())
+            return rdmia.number(lower,upper)
+        else:
+            return rdmia.number(math.cosh(value))
 
     #hyperbolic tangent
     @staticmethod
     def tanh(value):
-        return rdmia.number(math.tanh(RMath.degToRad(value)))
-        #return RMath.sinh(value)/RMath.cosh(value)
+        if (type(value) is Rdm.Rdm):
+            lower = math.tanh(value.lower())
+            upper = math.tanh(value.upper())
+            return rdmia.number(lower,upper)
+        else:
+            return rdmia.number(math.tanh(value))
         
     #hyperbolic secant
     @staticmethod
     def sech(value):
-        return 1.0/RMath.cosh(value)
+        if (type(value) is Rdm.Rdm):
+            return 1.0/RMath.cosh(value)
+        else:
+            return rdmia.number(1.0/math.cosh(value))
 
     #hyperbolic cosecant
     @staticmethod
     def csch(value):
-        return 1.0/RMath.sinh(value)
+        if (type(value) is Rdm.Rdm):
+            return 1.0/RMath.sinh(value)
+        else:
+            return rdmia.number(1.0/math.sinh(value))
 
     #hyperbolic cotangent
     @staticmethod
     def coth(value):
-        return RMath.cosh(value)/RMath.sinh(value)
+        if (type(value) is Rdm.Rdm):
+            return RMath.cosh(value)/RMath.sinh(value)
+        else:
+            return rdmia.number(math.cosh(value)/math.sinh(value))
     
     #inverse sine
     @staticmethod
     def asin(value):
-        return rdmia.number(math.asin(RMath.degToRad(value)))
+        if (type(value) is Rdm.Rdm):
+            lower = math.asin(value.lower())
+            upper = math.asin(value.upper())
+            return rdmia.number(lower,upper)
+        else:
+            return rdmia.number(math.asin(value))
 
     #inverse cosine
     @staticmethod
     def acos(value):
-        return rdmia.number(math.acos(RMath.degToRad(value)))
+        if (type(value) is Rdm.Rdm):
+            lower = math.acos(value.lower())
+            upper = math.acos(value.upper())
+            return rdmia.number(lower,upper)
+        else:
+            return rdmia.number(math.acos(value))
 
     #inverse tangent
     @staticmethod
     def atan(value):
-        return rdmia.number(math.atan(RMath.degToRad(value)))
+        if (type(value) is Rdm.Rdm):
+            lower = math.atan(value.lower())
+            upper = math.atan(value.upper())
+            return rdmia.number(lower,upper)
+        else:
+            return rdmia.number(math.atan(value))
 
     #inverse hyperbolic sine
     @staticmethod
     def asinh(value):
-        return rdmia.number(math.asinh(RMath.degToRad(value)))
+        if (type(value) is Rdm.Rdm):
+            lower = math.asinh(value.lower())
+            upper = math.asinh(value.upper())
+            return rdmia.number(lower,upper)
+        else:
+            return rdmia.number(math.asinh(value))
 
     #inverse hyperbolic cosine
     @staticmethod
     def acosh(value):
-        return rdmia.number(math.acosh(RMath.degToRad(value)))
+        if (type(value) is Rdm.Rdm):
+            lower = math.acosh(value.lower())
+            upper = math.acosh(value.upper())
+            return rdmia.number(lower,upper)
+        else:
+            return rdmia.number(math.acosh(value))
 
     #inverse hyperbolic tangent
     @staticmethod
     def atanh(value):
-        return rdmia.number(math.atanh(RMath.degToRad(value)))
+        if (type(value) is Rdm.Rdm):
+            lower = math.atanh(value.lower())
+            upper = math.atanh(value.upper())
+            return rdmia.number(lower,upper)
+        else:
+            return rdmia.number(math.atanh(value))
