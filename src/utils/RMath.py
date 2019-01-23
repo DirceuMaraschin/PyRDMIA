@@ -22,16 +22,29 @@ class RMath(object):
         PI = rdmia.number(math.pi)
         return PI
         
-    #convert degrees to radians
+    #convert angle x from degrees to radians
     @staticmethod
     def degToRad(value):
-        #rad = (value/180)*math.pi
         rad = 0.0
         if (type(value) is Rdm.Rdm):
-            rad = math.radians(qm.midpoint(value))
+            lower = math.radians(value.lower())
+            upper = math.radians(value.upper())
+            rad = rdmia.number(lower,upper)
         else:
             rad = math.radians(value)
         return rad
+
+    #convert angle x from radians to degrees
+    @staticmethod
+    def radToDeg(value):
+        deg = 0.0
+        if (type(value) is Rdm.Rdm):
+            lower = math.degrees(value.lower())
+            upper = math.degrees(value.upper())
+            deg = rdmia.number(lower,upper)
+        else:
+            deg = math.degrees(value)
+        return deg
 
     #factorial
     @staticmethod
