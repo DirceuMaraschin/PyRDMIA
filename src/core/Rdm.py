@@ -26,7 +26,7 @@ class Rdm(object):
     _alpha = 0.0 
     f = None
 
-    def __init__(self,x,y,precision=0.01):
+    def __init__(self,x,y,precision=0.1):
         self._alpha = precision
         self._lower = np.float64(x)
         self._upper = np.float64(x) if y is None  else np.float64(y)
@@ -43,9 +43,6 @@ class Rdm(object):
         if(type(other) is not Rdm):
             other = Rdm(other,None)
         return other
-
-    def getNumber(self,alpha):
-        return self._f(alpha)
 
     #def isEmpty(self):
     #    return self.__isEmpty
@@ -236,7 +233,7 @@ class Rdm(object):
         return Rdm(min(values),max(values))
 
 
-    #inion operator
+    #union operator
     def __or__(self, other):
         other = self.__checkValue(other)
         return Rdm(min(self.lower(),other.lower()),max(self.upper(),other.upper()))
@@ -244,10 +241,17 @@ class Rdm(object):
     #intersection operator
     def __and__(self,other):
         other = self.__checkValue(other)
-        if (max(self.lower(),other.lower())) < (min(self.upper(),other.upper())):
-            raise UndefinedValueIntervalError("Invalid operation! Returns an improper interval.")
+        if (max(self.lower(),other.lower())) <= (min(self.upper(),other.upper())):
+            return Rdm(max(self.lower(),other.lower()),min(self.upper(),other.upper()))
         else:
-            return Rdm(min(self.upper(),other.upper()),max(self.lower(),other.lower()))
+            raise TypeIntervalError("empty interval")
+    '''
+    before
+    if (max(self.lower(),other.lower())) <= (min(self.upper(),other.upper())):
+        raise UndefinedValueIntervalError("Invalid operation! Returns an improper interval.")
+    else:
+        return Rdm(min(self.upper(),other.upper()),max(self.lower(),other.lower()))
+    '''
 
     #interval inversion
     def __invert__(self):
