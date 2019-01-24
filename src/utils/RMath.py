@@ -21,6 +21,11 @@ class RMath(object):
     def pi():
         PI = rdmia.number(math.pi)
         return PI
+    
+    @staticmethod
+    def e():
+        euler = rdmia.number(math.e)
+        return euler
         
     #convert angle x from degrees to radians
     @staticmethod
