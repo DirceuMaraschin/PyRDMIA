@@ -54,12 +54,22 @@ class RMath(object):
     #factorial
     @staticmethod
     def factorial(value):
-        return rdmia.number(math.factorial(value))
+        if (type(value) is Rdm.Rdm):
+            lower = math.factorial(value.lower())
+            upper = math.factorial(value.upper())
+            return rdmia.number(lower,upper)
+        else:
+            return rdmia.number(math.factorial(value))
         
     #natural logarithm
     @staticmethod
     def log(value):
-        return rdmia.number(math.log(value))
+        if (type(value) is Rdm.Rdm):
+            lower = math.log(value.lower())
+            upper = math.log(value.upper())
+            return rdmia.number(lower,upper)
+        else:
+            return rdmia.number(math.log(value))
 
     #square root
     @staticmethod
@@ -72,9 +82,11 @@ class RMath(object):
     #absolute value 
     @staticmethod
     def abs(value):
-        return RMath.sqrt(value**2.0)
+        if(type(value) is Rdm.Rdm):
+            return RMath.sqrt(value**2.0)
+        else:
+            return abs(value)
 
-    
     #sine function by sin² + cos² = 1
     @staticmethod
     def sin(value):
