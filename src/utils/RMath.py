@@ -36,7 +36,7 @@ class RMath(object):
             upper = math.radians(value.upper())
             rad = rdmia.number(lower,upper)
         else:
-            rad = math.radians(value)
+            rad = rdmia.number(math.radians(value))
         return rad
 
     #convert angle x from radians to degrees
@@ -48,7 +48,7 @@ class RMath(object):
             upper = math.degrees(value.upper())
             deg = rdmia.number(lower,upper)
         else:
-            deg = math.degrees(value)
+            deg = rdmia.number(math.degrees(value))
         return deg
 
     #factorial
