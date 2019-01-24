@@ -79,6 +79,14 @@ class RMath(object):
         else:
             return rdmia.number(value**(1.0/2.0))
 
+    #higher index root
+    @staticmethod
+    def hiRoot(value,index):
+        if(type(value) is Rdm.Rdm):
+            return value**(1.0/index)
+        else:
+            return rdmia.number(value**(1.0/index))
+
     #absolute value 
     @staticmethod
     def abs(value):
