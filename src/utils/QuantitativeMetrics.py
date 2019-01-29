@@ -19,31 +19,37 @@ class QuantitativeMetrics(object):
 	#After performing the median on the input data set.
 	@staticmethod
 	def median(intervalList):
-		lowers = []
-		uppers = []
+		#lowers = []
+		#uppers = []
+		item = []
 		for i in range(len(intervalList)):
-			lowers.append(intervalList[i].lower())
-			uppers.append(intervalList[i].upper())
-
-		lowers.sort()
-		uppers.sort()
+			#lowers.append(intervalList[i].lower())
+			#uppers.append(intervalList[i].upper())
+			item.append(intervalList[i])
+		
+		#lowers.sort()
+		#uppers.sort()
+		item.sort()
 
 		half=int(len(intervalList)/2)
 
 		if((len(intervalList)%2) == 0):
-			lower = (lowers[half] + lowers[half-1])/2
-			upper = (uppers[half] + uppers[half-1])/2
-			Average = rdmia.number(lower,upper)
+			#lower = (lowers[half] + lowers[half-1])/2
+			#upper = (uppers[half] + uppers[half-1])/2
+			median = (item[half] + item[half-1])/2
+			#Average = rdmia.number(lower,upper)
 		else:
-			lower = lowers[half]
-			upper = uppers[half]
-			Average = rdmia.number(lower,upper)
-		return Average
+			#lower = lowers[half]
+			#upper = uppers[half]
+			median = (item[half])
+			#Average = rdmia.number(lower,upper)
+		#return Average
+		return median
 
 	#Performs the full span operation in the input data set.
 	@staticmethod
 	def fullSpan(intervalList):
-		AmpTotal = rdmia.number(0)
+		fspan = rdmia.number(0.0)
 		lowers = []
 		uppers = []
 
@@ -59,12 +65,11 @@ class QuantitativeMetrics(object):
 		if(intervalList[len(intervalList)-1].lower() > intervalList[0].upper()):
 			upper = uppers[len(uppers)-1] - uppers[0]
 			lower = lowers[len(lowers)-1] - lowers[0]
-			AmpTotal = rdmia.number(lower,upper)
+			fspan = rdmia.number(lower,upper)
 		else:
 			upper = lowers[len(intervalList)-1] - lowers[0]
-			AmpTotal = rdmia.number(0, upper)
-
-		return AmpTotal
+			fspan = rdmia.number(0, upper)
+		return fspan
 
 	#The variance operation is used the average operation of that class, getting a list of inervalares values.
 	@staticmethod
