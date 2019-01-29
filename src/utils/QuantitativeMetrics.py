@@ -128,4 +128,3 @@ class QuantitativeMetrics(object):
 	def coefCorrelation(intervalListOne, intervalListTwo):
 		coefCorrelation = QuantitativeMetrics.coVariance(intervalListOne, intervalListTwo)/(QuantitativeMetrics.stdDeviation(intervalListOne)*QuantitativeMetrics.stdDeviation(intervalListTwo))
 		return coefCorrelation
-
