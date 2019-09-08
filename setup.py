@@ -18,6 +18,7 @@
 # MA 02110-1301, USA.
 
 
+from setuptools import setup
 from distutils.core import Extension
 from distutils.core import setup
 
@@ -37,7 +38,7 @@ if __name__ == "__main__":
         description=_package_description[0],
         long_description="\n".join(_package_description[2:-1]),
         author="Lucas Mendes Tortelli, Dirceu Maraschin Jr.",
-        author_email="lmtortelli@inf.ufpel.edu.br,dirceu_maraschin@hotmail.com",
+        author_email="lmtortelli@inf.ufpel.edu.br,dmaraschin@inf.ufpel.edu.br",
         license="GPL",
         platforms=[
             "Windows",

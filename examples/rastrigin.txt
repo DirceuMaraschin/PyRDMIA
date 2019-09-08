@@ -1,6 +1,0 @@
-rastrigin:{'dim': 1, 'Ymin': [0.0, 0.0], 'cpu': 0.11233305931091309, 'Low': -5.12, 'High': 5.12, 'N-Steps': 3}
-
-
-real    168m12.689s
-user    167m56.828s
-sys     0m2.359s
