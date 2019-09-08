@@ -4,7 +4,7 @@ Version: 0.1.0
 Summary:  Interval Arithmetic package
 Home-page: UNKNOWN
 Author: Lucas Mendes Tortelli, Dirceu Maraschin Jr.
-Author-email: lmtortelli@inf.ufpel.edu.br,dirceu_maraschin@hotmail.com
+Author-email: lmtortelli@inf.ufpel.edu.br,dmaraschin@inf.ufpel.edu.br
 License: GPL
 Description: This package provides types and functions for Maximum Accuracy Interval
         Arithmetic.

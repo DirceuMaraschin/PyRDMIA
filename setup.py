@@ -1,23 +1,3 @@
-# setup.py
-#
-# Copyright 2008 Rafael Menezes Barreto <rmb3@cin.ufpe.br,
-# rafaelbarreto87@gmail.com>
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License version 2
-# as published by the Free Software Foundation.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-# MA 02110-1301, USA.
-
-
 from setuptools import setup
 from distutils.core import Extension
 from distutils.core import setup
@@ -37,9 +17,10 @@ if __name__ == "__main__":
         version="0.1.0",
         description=_package_description[0],
         long_description="\n".join(_package_description[2:-1]),
-        author="Lucas Mendes Tortelli, Dirceu Maraschin Jr.",
+        author="Dirceu Maraschin Jr.,Lucas Mendes Tortelli",
         author_email="lmtortelli@inf.ufpel.edu.br,dmaraschin@inf.ufpel.edu.br",
         license="GPL",
+        url="https://github.com/DirceuMaraschin/PyRDMIA",
         platforms=[
             "Windows",
             "Linux"
